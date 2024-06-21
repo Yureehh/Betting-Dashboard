@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "betting-dashboard"
-version = "0.1.0"
+version = "0.2.0"
 description = "Yureeh's bets public ledger"
 authors = ["yureehh <fabbri.juri@gmail.com>"]
 license = "MIT"
@@ -25,6 +25,14 @@ pytest = "^8.2.2"
 pytest-cov = "^4.1.0"
 
 
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "pep440"
+version_provider = "poetry"
+update_changelog_on_bump = true
+major_version_zero = true
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
