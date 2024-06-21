@@ -1,0 +1,52 @@
+name: Python package
+
+on:
+  push:
+    branches: [main, develop, feature/*]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"] # Adjust based on your project needs
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+
+    - name: Cache Poetry Dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pypoetry
+          ~/.poetry
+        key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+        restore-keys: ${{ runner.os }}-poetry-
+
+    - name: Install Dependencies with Poetry
+      run: poetry install --no-root
+
+    - name: Install pre-commit
+      run: pip install pre-commit
+
+    - name: Run Pre-commit Hooks
+      run: pre-commit run --all-files
+
+    - name: Run Linting and Formatting Checks
+      run: |
+        poetry run black --check src
+        poetry run isort --check-only src
+        poetry run flake8 src
+        poetry run bandit -r src

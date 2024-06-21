@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "betting-dashboard"
+version = "0.1.0"
+description = "Yureeh's bets public ledger"
+authors = ["yureehh <fabbri.juri@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.9.7 || >3.9.7,<4.0"
+commitizen = "^3.27.0"
+streamlit = "^1.35.0"
+plotly = "^5.22.0"
+watchdog = "^4.0.1"
+flake8-bugbear = "^24.4.26"
+flake8-comprehensions = "^3.14.0"
+pep8-naming = "^0.14.1"
+flake8-docstrings = "^1.7.0"
+pre-commit = "^3.7.1"
+flake8 = "^7.1.0"
+isort = "^5.13.2"
+black = "^24.4.2"
+bandit = "^1.7.9"
+pytest = "^8.2.2"
+pytest-cov = "^4.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
