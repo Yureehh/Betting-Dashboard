@@ -128,7 +128,7 @@ cookieSecret = "a-random-key-appears-here"
 # If false, will attempt to open a browser window on start.
 # Default: false unless (1) we are on a Linux box where DISPLAY is unset, or
 # (2) we are running in the Streamlit Atom plugin.
-headless = false
+headless = true
 
 # Automatically rerun script when the file is modified on disk.
 # Default: false
@@ -156,7 +156,7 @@ baseUrlPath = ""
 # on and `server.enableCORS` is off at the same time, we will prioritize
 # `server.enableXsrfProtection`.
 # Default: true
-enableCORS = true
+enableCORS = false
 
 # Enables support for Cross-Site Request Forgery (XSRF) protection, for added
 # security.
@@ -164,7 +164,7 @@ enableCORS = true
 # on and `server.enableCORS` is off at the same time, we will prioritize
 # `server.enableXsrfProtection`.
 # Default: true
-enableXsrfProtection = true
+enableXsrfProtection = false
 
 # Max size, in megabytes, for files uploaded with the file_uploader.
 # Default: 200
