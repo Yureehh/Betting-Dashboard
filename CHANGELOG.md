@@ -1,3 +1,12 @@
+## 0.4.1 (2024-06-24)
+
+### Fix
+
+- **.gitignore**: finalized gitignore
+- **gitignore**: updated gitignore to publish the ledger
+- **model_validation**: reverted fix back
+- **model_validation**: testing
+
 ## 0.4.0 (2024-06-24)
 
 ### Feat
