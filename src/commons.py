@@ -114,6 +114,7 @@ def load_bets():
     """
     try:
         # Load the CSV file
+        #  TODO: read it from s3
         data = pd.read_csv(BETS_PATH)
     except FileNotFoundError:
         st.error("The bets ledger file was not found. Please check the path.")

@@ -127,7 +127,7 @@ def render_roi_by_wager_type(data):
     )
 
     fig.update_traces(texttemplate="%{text}%", textposition="outside")
-    fig.update_layout(showlegend=False)
+    fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
 
     st.write("### ROI by Wager Type")
