@@ -93,11 +93,3 @@ target/
 
 # Poetry lock file
 poetry.lock
-
-# All csv files
-*.csv
-
-# All parquet files
-*.parquet
-
-catboost_info/

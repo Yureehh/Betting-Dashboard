@@ -156,7 +156,7 @@ baseUrlPath = ""
 # on and `server.enableCORS` is off at the same time, we will prioritize
 # `server.enableXsrfProtection`.
 # Default: true
-enableCORS = false
+enableCORS = true
 
 # Enables support for Cross-Site Request Forgery (XSRF) protection, for added
 # security.
@@ -164,7 +164,7 @@ enableCORS = false
 # on and `server.enableCORS` is off at the same time, we will prioritize
 # `server.enableXsrfProtection`.
 # Default: true
-enableXsrfProtection = false
+enableXsrfProtection = true
 
 # Max size, in megabytes, for files uploaded with the file_uploader.
 # Default: 200
