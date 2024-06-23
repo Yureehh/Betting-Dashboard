@@ -1,13 +1,17 @@
 import plotly.express as px
 import streamlit as st
 
-from src.commons import break_line, load_bets
-from src.setup import setup
+from src.commons import BREAK_LINE, load_bets, setup
 from src.sidebar import render_sidebar
 
 
 def plot_bet_number_percentage(data):
-    """Plot pie chart of bet number percentage given league."""
+    """
+    Plot pie chart of bet number percentage given league.
+
+    Args:
+        data (pd.DataFrame): The data frame containing the bets ledger.
+    """
     st.write("### Bet Number Percentage by League")
     bet_counts = data["League"].value_counts().reset_index()
     bet_counts.columns = ["League", "Count"]
@@ -17,11 +21,16 @@ def plot_bet_number_percentage(data):
         names="League",
     )
     st.plotly_chart(fig)
-    st.markdown(break_line, unsafe_allow_html=True)
+    st.markdown(BREAK_LINE, unsafe_allow_html=True)
 
 
 def plot_profit_by_league(data):
-    """Plot profit by league."""
+    """
+    Plot profit by league.
+
+    Args:
+        data (pd.DataFrame): The data frame containing the bets ledger.
+    """
     st.write("### Profit by League")
     profit_by_league = data.groupby("League")["Profit"].sum().reset_index()
     profit_by_league["Profit"] = profit_by_league["Profit"].round(2)
@@ -41,11 +50,16 @@ def plot_profit_by_league(data):
     fig.update_layout(showlegend=False)
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     st.plotly_chart(fig)
-    st.markdown(break_line, unsafe_allow_html=True)
+    st.markdown(BREAK_LINE, unsafe_allow_html=True)
 
 
 def plot_winrate_by_league(data):
-    """Plot winrate by league."""
+    """
+    Plot winrate by league.
+
+    Args:
+        data (pd.DataFrame): The data frame containing the bets ledger.
+    """
     st.write("### Winrate by League")
     data["Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
     winrate_by_league = data.groupby("League")["Win"].mean().reset_index()
@@ -66,11 +80,16 @@ def plot_winrate_by_league(data):
     fig.update_layout(showlegend=False)
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     st.plotly_chart(fig)
-    st.markdown(break_line, unsafe_allow_html=True)
+    st.markdown(BREAK_LINE, unsafe_allow_html=True)
 
 
 def plot_roi_by_league(data):
-    """Plot ROI by league."""
+    """
+    Plot ROI by league.
+
+    Args:
+        data (pd.DataFrame): The data frame containing the bets ledger.
+    """
     st.write("### ROI by League")
     roi_by_league = data.groupby("League").agg({"Profit": "sum", "Wager": "sum"})
     roi_by_league["ROI"] = (
@@ -91,7 +110,7 @@ def plot_roi_by_league(data):
     fig.update_layout(showlegend=False)
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     st.plotly_chart(fig)
-    st.markdown(break_line, unsafe_allow_html=True)
+    st.markdown(BREAK_LINE, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
@@ -99,11 +118,14 @@ if __name__ == "__main__":
 
     data = load_bets()
 
-    filtered_data = render_sidebar(data)
+    if not data.empty:
+        filtered_data = render_sidebar(data)
 
-    plot_bet_number_percentage(filtered_data)
-    plot_profit_by_league(filtered_data)
-    plot_winrate_by_league(filtered_data)
-    plot_roi_by_league(filtered_data)
+        plot_bet_number_percentage(filtered_data)
+        plot_profit_by_league(filtered_data)
+        plot_winrate_by_league(filtered_data)
+        plot_roi_by_league(filtered_data)
 
-    st.markdown("<hr>", unsafe_allow_html=True)
+        st.markdown("<hr>", unsafe_allow_html=True)
+    else:
+        st.error("Failed to load data. Please check the data source.")

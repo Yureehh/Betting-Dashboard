@@ -2,19 +2,25 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from src.commons import break_line, load_bets
-from src.setup import setup
+from src.commons import BREAK_LINE, load_bets, setup
 from src.sidebar import render_sidebar
 
 
 def render_metrics(data):
-    """Display metrics for the total number of bets, winrate, profit, and ROI."""
-    # Metrics
+    """
+    Display metrics for the total number of bets, winrate, profit, and ROI.
+
+    Args:
+        data (pd.DataFrame): The data frame containing the bets ledger.
+    """
+    # Calculate metrics
     total_bets = len(data)
     total_wins = len(data[data["Result"] == "W"])
-    total_winrate = (total_wins / total_bets) * 100
+    total_winrate = (total_wins / total_bets) * 100 if total_bets > 0 else 0
     total_profit = data["Profit"].sum()
-    total_roi = (total_profit / data["Wager"].sum()) * 100
+    total_roi = (
+        (total_profit / data["Wager"].sum()) * 100 if data["Wager"].sum() > 0 else 0
+    )
 
     # Display metrics in four columns
     col1, col2, col3, col4, col5 = st.columns(5)
@@ -29,18 +35,28 @@ def render_metrics(data):
     with col5:
         st.metric("Total ROI %", f"{total_roi:.2f}%")
 
-    st.markdown(break_line, unsafe_allow_html=True)
+    st.markdown(BREAK_LINE, unsafe_allow_html=True)
 
 
 def render_bet_df(data):
-    """Display the bets ledger in a DataFrame."""
+    """
+    Display the bets ledger in a DataFrame.
+
+    Args:
+        data (pd.DataFrame): The data frame containing the bets ledger.
+    """
     st.write("### Bets Ledger")
     st.dataframe(data, hide_index=True)
-    st.markdown(break_line, unsafe_allow_html=True)
+    st.markdown(BREAK_LINE, unsafe_allow_html=True)
 
 
 def render_profit_timeline(data):
-    """Display a line chart showing the profit timeline."""
+    """
+    Display a line chart showing the profit timeline.
+
+    Args:
+        data (pd.DataFrame): The data frame containing the bets ledger.
+    """
     chart_name = "### Profit Timeline"
     x_axis = "Month"
     y_axis = "Profit"
@@ -79,11 +95,16 @@ def render_profit_timeline(data):
 
     st.write(chart_name)
     st.plotly_chart(fig)
-    st.markdown(break_line, unsafe_allow_html=True)
+    st.markdown(BREAK_LINE, unsafe_allow_html=True)
 
 
 def render_roi_by_wager_type(data):
-    """Display a horizontal bar chart showing the ROI by wager type with conditional coloring."""
+    """
+    Display a horizontal bar chart showing the ROI by wager type with conditional coloring.
+
+    Args:
+        data (pd.DataFrame): The data frame containing the bets ledger.
+    """
     roi_by_wager = data.groupby("Type").agg({"Profit": "sum", "Wager": "sum"})
     roi_by_wager["ROI"] = round(
         (roi_by_wager["Profit"] / roi_by_wager["Wager"]) * 100, 2
@@ -111,7 +132,7 @@ def render_roi_by_wager_type(data):
 
     st.write("### ROI by Wager Type")
     st.plotly_chart(fig)
-    st.markdown(break_line, unsafe_allow_html=True)
+    st.markdown(BREAK_LINE, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
@@ -119,11 +140,14 @@ if __name__ == "__main__":
 
     data = load_bets()
 
-    filtered_data = render_sidebar(data)
+    if not data.empty:
+        filtered_data = render_sidebar(data)
 
-    render_metrics(filtered_data)
-    render_profit_timeline(filtered_data)
-    render_bet_df(filtered_data)
-    render_roi_by_wager_type(filtered_data)
+        render_metrics(filtered_data)
+        render_profit_timeline(filtered_data)
+        render_bet_df(filtered_data)
+        render_roi_by_wager_type(filtered_data)
 
-    st.markdown("<hr>", unsafe_allow_html=True)
+        st.markdown("<hr>", unsafe_allow_html=True)
+    else:
+        st.error("Failed to load data. Please check the data source.")

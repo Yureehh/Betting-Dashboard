@@ -1,8 +1,9 @@
+
 # Betting-Dashboard
 
 ## Overview
 
-**Betting-Dashboard** is a Streamlit application developed to visualize and manage a public ledger of bets. The dashboard provides insights into your betting history, helping you analyze performance and trends. This project is maintained by **Yureeh**.
+**Betting-Dashboard** is a Streamlit application designed to visualize and manage a public ledger of bets. The dashboard offers insights into your betting history, helping you analyze performance and trends. This project is maintained by **Yureeh**.
 
 ## Features
 
@@ -20,21 +21,25 @@ Follow these steps to set up the Betting-Dashboard on your local machine:
    ```bash
    git clone https://github.com/Yureehh/Betting-Dashboard.git
    cd Betting-Dashboard
+   ```
 
-2. **Install poetry:**
+2. **Install Poetry:**
 
    ```bash
    pip install poetry
+   ```
 
 3. **Install dependencies:**
 
    ```bash
-    poetry install
+   poetry install
+   ```
 
 4. **Activate the virtual environment:**
 
    ```bash
    poetry shell
+   ```
 
 ## Usage
 
@@ -56,7 +61,7 @@ poetry run pytest
 
 ## Data Source
 
-The Betting-Dashboard uses a public ledger of bets to generate visualizations and insights. You can check the format the data should be in by looking at the `bets_ledger.csv` file in the data folder.
+The Betting-Dashboard uses a public ledger of bets to generate visualizations and insights. You can check the required format for the data by examining the `bets_ledger.csv` file in the data folder.
 
 ## Versioning
 
@@ -84,4 +89,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-If you have any questions or feedback, feel free to reach out to me at
+If you have any questions or feedback, feel free to reach out to me on X [@Yureehh](https://twitter.com/Yureehh).

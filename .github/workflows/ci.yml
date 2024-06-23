@@ -1,10 +1,15 @@
-name: Python package
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, develop, feature/*]
+    branches:
+      - main
+      - develop
+      - 'feature/*'
   pull_request:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
 
 jobs:
   build:
@@ -33,7 +38,8 @@ jobs:
           ~/.cache/pypoetry
           ~/.poetry
         key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
-        restore-keys: ${{ runner.os }}-poetry-
+        restore-keys: |
+          ${{ runner.os }}-poetry-
 
     - name: Install Dependencies with Poetry
       run: poetry install --no-root
@@ -50,3 +56,6 @@ jobs:
         poetry run isort --check-only src
         poetry run flake8 src
         poetry run bandit -r src
+
+    - name: Test Application
+      run: poetry run pytest --cov=src --cov-report=term-missing
