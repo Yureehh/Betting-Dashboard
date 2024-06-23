@@ -1,3 +1,9 @@
+## 0.4.0 (2024-06-24)
+
+### Feat
+
+- **Model-Validation**: Added model validation and starte true public ledger
+
 ## 0.3.0 (2024-06-23)
 
 ### Feat
