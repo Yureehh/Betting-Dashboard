@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "betting-dashboard"
-version = "0.2.0"
+version = "0.3.0"
 description = "Yureeh's bets public ledger"
 authors = ["yureehh <fabbri.juri@gmail.com>"]
 license = "MIT"
