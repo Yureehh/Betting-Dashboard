@@ -1,12 +1,5 @@
 [global]
 
-# By default, Streamlit checks if the Python watchdog module is available
-# and, if not, prints a warning asking for you to install it. The watchdog
-# module is not required, but highly recommended. It improves Streamlit's
-# ability to detect changes to files in your filesystem.
-# If you'd like to turn off this warning, set this to True.
-# Default: false
-disableWatchdogWarning = false
 
 # By default, Streamlit displays a warning when a user sets both a widget
 # default value in the function defining the widget and a widget value via
@@ -35,14 +28,7 @@ messageFormat = "%(asctime)s %(message)s"
 
 [client]
 
-# Whether to enable st.cache. This does not affect st.cache_data or
-# st.cache_resource.
-# Default: true
-caching = true
 
-# If false, makes your Streamlit script not draw to a Streamlit app.
-# Default: true
-displayEnabled = true
 
 # Controls whether uncaught app exceptions and deprecation warnings
 # are displayed in the browser. By default, this is set to True and
@@ -83,17 +69,7 @@ showSidebarNavigation = true
 # Default: true
 magicEnabled = true
 
-# Install a Python tracer to allow you to stop or pause your script at
-# any point and introspect it. As a side-effect, this slows down your
-# script's execution.
-# Default: false
-installTracer = false
 
-
-# Sets the MPLBACKEND environment variable to Agg inside Streamlit to
-# prevent Python crashing.
-# Default: true
-fixMatplotlib = true
 
 # Handle script rerun requests immediately, rather than waiting for script
 # execution to reach a yield point. This makes Streamlit much more
@@ -260,12 +236,6 @@ serverPort = 8501
 # Default: ""
 token = ""
 
-[deprecation]
-
-# Set to false to disable the deprecation warning for using the global pyplot
-# instance.
-# Default: true
-showPyplotGlobalUse = true
 
 [theme]
 

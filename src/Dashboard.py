@@ -2,11 +2,9 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from src.commons import load_bets
+from src.commons import break_line, load_bets
 from src.setup import setup
 from src.sidebar import render_sidebar
-
-break_line = "<br><br>"
 
 
 def render_metrics(data):
@@ -19,14 +17,16 @@ def render_metrics(data):
     total_roi = (total_profit / data["Wager"].sum()) * 100
 
     # Display metrics in four columns
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
         st.metric("Total Bets", total_bets)
     with col2:
-        st.metric("Total Winrate %", f"{total_winrate:.2f}%")
+        st.metric("Total Wager", data["Wager"].sum())
     with col3:
-        st.metric("Total Profit (Units)", f"{total_profit:.2f}")
+        st.metric("Total Winrate %", f"{total_winrate:.2f}%")
     with col4:
+        st.metric("Total Profit (Units)", f"{total_profit:.2f}")
+    with col5:
         st.metric("Total ROI %", f"{total_roi:.2f}%")
 
     st.markdown(break_line, unsafe_allow_html=True)
@@ -45,7 +45,6 @@ def render_profit_timeline(data):
     x_axis = "Month"
     y_axis = "Profit"
 
-    # Ensure 'Date' is in datetime format
     data["Date"] = pd.to_datetime(data["Date"])
 
     # Group by month and sum profits
@@ -62,10 +61,6 @@ def render_profit_timeline(data):
     min_date = monthly_profit["Month_dt"].min() - pd.DateOffset(months=2)
     max_date = monthly_profit["Month_dt"].max() + pd.DateOffset(months=1)
 
-    # Calculate the range for the y-axis
-    min_profit = monthly_profit[y_axis].min() * 0.9
-    max_profit = monthly_profit[y_axis].max() * 1.1
-
     # Create a Plotly figure
     fig = px.line(monthly_profit, x="Month", y=y_axis)
 
@@ -79,79 +74,56 @@ def render_profit_timeline(data):
             "range": [min_date, max_date],  # Extend range slightly
             "tickmode": "linear",
         },
-        yaxis={"range": [min_profit, max_profit]},  # Extend range slightly
         width=1000,  # Adjust width to make plot wider
     )
 
-    # Display the Plotly chart in Streamlit
     st.write(chart_name)
     st.plotly_chart(fig)
     st.markdown(break_line, unsafe_allow_html=True)
 
 
-def render_summary_table(data):
-    """Display a summary table with the total number of bets, wins, losses, draws, profit, winrate, and ROI."""
-    # Summary table
-    summary_table = (
-        data.groupby("League")
-        .agg(
-            Total_Bets=("Date", "count"),
-            Total_Wins=("Result", lambda x: (x == "W").sum()),
-            Total_Losses=("Result", lambda x: (x == "L").sum()),
-            Total_Draws=("Result", lambda x: (x == "D").sum()),
-            Total_Profit=("Profit", "sum"),
-            Total_Wager=("Wager", "sum"),
-        )
-        .reset_index()
+def render_roi_by_wager_type(data):
+    """Display a horizontal bar chart showing the ROI by wager type with conditional coloring."""
+    roi_by_wager = data.groupby("Type").agg({"Profit": "sum", "Wager": "sum"})
+    roi_by_wager["ROI"] = round(
+        (roi_by_wager["Profit"] / roi_by_wager["Wager"]) * 100, 2
+    )
+    roi_by_wager = roi_by_wager.reset_index()
+
+    roi_by_wager["color"] = roi_by_wager["ROI"].apply(
+        lambda x: "#00CC96" if x > 0 else "#FF6692"
     )
 
-    # Compute additional columns
-    summary_table["Winrate %"] = (
-        summary_table["Total_Wins"] / summary_table["Total_Bets"]
-    ) * 100
-    summary_table["ROI %"] = (
-        summary_table["Total_Profit"] / summary_table["Total_Wager"]
-    ) * 100
+    fig = px.bar(
+        roi_by_wager,
+        x="ROI",
+        y="Type",
+        orientation="h",
+        labels={"Type": "Wager Type", "ROI": "ROI %"},
+        color="color",
+        color_discrete_map={"#00CC96": "#00CC96", "#FF6692": "#FF6692"},
+        text="ROI",
+    )
 
-    st.table(summary_table)
+    fig.update_traces(texttemplate="%{text}%", textposition="outside")
+    fig.update_layout(showlegend=False)
+    fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
+
+    st.write("### ROI by Wager Type")
+    st.plotly_chart(fig)
+    st.markdown(break_line, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
-    """
-    Main function to render the Streamlit dashboard.
-    """
     setup("Yureeh Betting Dashboard", "📈")
 
     data = load_bets()
 
-    # Capture the filtered data from the sidebar
     filtered_data = render_sidebar(data)
 
-    # Use the filtered data in the rendering functions
     render_metrics(filtered_data)
-
-    # Plot the profit timeline
     render_profit_timeline(filtered_data)
-
-    # Display the filtered data in a table
     render_bet_df(filtered_data)
+    render_roi_by_wager_type(filtered_data)
 
-    # render_summary_table(filtered_data)
-
-# # Pie Chart: % of Bets by League using Plotly
-# bets_by_league = data["League"].value_counts().reset_index()
-# bets_by_league.columns = ["League", "Count"]
-# fig = px.pie(bets_by_league, values="Count", names="League", title="% of Bets by League")
-# st.plotly_chart(fig)
-
-# # ROI % by Wager Type
-# roi_by_wager = data.groupby("Type")["Profit"].sum() / data.groupby("Type")["Wager"].sum()
-# st.bar_chart(roi_by_wager)
-
-# # Win % by Odds
-# win_by_odds = data[data["Result"] == "W"].groupby("Odds").size() / data.groupby("Odds").size() * 100
-# st.bar_chart(win_by_odds)
-
-# # Win % by League
-# win_by_league = data[data["Result"] == "W"].groupby("League").size() / data.groupby("League").size() * 100
-# st.bar_chart(win_by_league)
+    st.markdown("<hr>", unsafe_allow_html=True)

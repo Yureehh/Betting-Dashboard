@@ -5,11 +5,14 @@ description = "Yureeh's bets public ledger"
 authors = ["yureehh <fabbri.juri@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [
+    { include = "**/*" }
+]
 
 [tool.poetry.dependencies]
 python = ">=3.9,<3.9.7 || >3.9.7,<4.0"
 commitizen = "^3.27.0"
-streamlit = "^1.35.0"
+streamlit = "^1.36.0"
 plotly = "^5.22.0"
 watchdog = "^4.0.1"
 flake8-bugbear = "^24.4.26"

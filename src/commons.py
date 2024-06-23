@@ -2,6 +2,8 @@ import pandas as pd
 
 from utils.paths import BETS_PATH
 
+break_line = "<br><br>"
+
 
 # Compute additional required columns
 def compute_profit(row):
