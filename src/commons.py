@@ -3,6 +3,9 @@ import streamlit as st
 
 from utils.paths import BETS_PATH
 
+# Suppress SettingWithCopyWarning warnings
+pd.options.mode.chained_assignment = None
+
 BREAK_LINE = "<br><br>"
 
 
