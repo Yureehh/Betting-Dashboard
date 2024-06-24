@@ -14,6 +14,8 @@ from utils.paths import (
     MODEL_METRICS,
 )
 
+LAST_UPDATED = "2024-06-24" # TODO: automatically update this date
+
 # TODO: Retrieve the model validations from S3
 
 
@@ -123,7 +125,7 @@ def display_league_accuracies(league_accuracies):
 
 
 if __name__ == "__main__":
-    setup("Model Validation", "✔️")
+    setup(f"Model Validation - Last updated on  {LAST_UPDATED}", "✅")
 
     data = load_bets()
 
