@@ -125,7 +125,7 @@ def display_league_accuracies(league_accuracies):
 
 
 if __name__ == "__main__":
-    setup(f"Model Validation - Last updated on  {LAST_UPDATED}", "✅")
+    setup(f"Model Validation - Last updated on  {LAST_UPDATED}", "✔️")
 
     data = load_bets()
 
