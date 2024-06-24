@@ -90,3 +90,5 @@ target/
 
 # Poetry lock file
 poetry.lock
+
+devcontainer/

@@ -123,7 +123,7 @@ def display_league_accuracies(league_accuracies):
 
 
 if __name__ == "__main__":
-    setup("Stats by Odds", "📈")
+    setup("Model Validation", "✔️")
 
     data = load_bets()
 

@@ -6,7 +6,8 @@ authors = ["yureehh <fabbri.juri@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 packages = [
-    { include = "**/*" }
+    { include = "**/*" },
+    { include = "src" }
 ]
 
 [tool.poetry.dependencies]
@@ -27,8 +28,6 @@ bandit = "^1.7.9"
 pytest = "^8.2.2"
 pytest-cov = "^4.1.0"
 
-
-
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "$version"
@@ -36,6 +35,7 @@ version_scheme = "pep440"
 version_provider = "poetry"
 update_changelog_on_bump = true
 major_version_zero = true
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
