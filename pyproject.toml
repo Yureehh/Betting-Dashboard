@@ -7,7 +7,6 @@ license = "MIT"
 readme = "README.md"
 packages = [
     { include = "**/*" },
-    { include = "src" }
 ]
 
 [tool.poetry.dependencies]
@@ -27,6 +26,7 @@ black = "^24.4.2"
 bandit = "^1.7.9"
 pytest = "^8.2.2"
 pytest-cov = "^4.1.0"
+numpy = "1.26.4"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
