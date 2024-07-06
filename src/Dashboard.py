@@ -25,15 +25,15 @@ def render_metrics(data):
     # Display metrics in four columns
     col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
-        st.metric("Total Bets", total_bets)
+        st.metric(r"\# Bets", total_bets)
     with col2:
-        st.metric("Total Wager", data["Wager"].sum())
+        st.metric("Units Wagered", data["Wager"].sum())
     with col3:
-        st.metric("Total Winrate %", f"{total_winrate:.2f}%")
+        st.metric("Winrate %", f"{total_winrate:.2f}%")
     with col4:
-        st.metric("Total Profit (Units)", f"{total_profit:.2f}")
+        st.metric("Profit (Units)", f"{total_profit:.2f}")
     with col5:
-        st.metric("Total ROI %", f"{total_roi:.2f}%")
+        st.metric("ROI %", f"{total_roi:.2f}%")
 
     st.markdown(BREAK_LINE, unsafe_allow_html=True)
 
@@ -46,6 +46,7 @@ def render_bet_df(data):
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
     st.write("### Bets Ledger")
+    data["Date"] = data["Date"].dt.date
     st.dataframe(data, hide_index=True)
     st.markdown(BREAK_LINE, unsafe_allow_html=True)
 
@@ -142,7 +143,7 @@ if __name__ == "__main__":
 
     if not data.empty:
         filtered_data = render_sidebar(data)
-
+        print(filtered_data.columns)
         render_metrics(filtered_data)
         render_profit_timeline(filtered_data)
         render_bet_df(filtered_data)
