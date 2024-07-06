@@ -5,7 +5,7 @@ import plotly.express as px
 import streamlit as st
 from PIL import Image
 
-from src.commons import BREAK_LINE, load_bets, setup
+from src.commons import BREAK_LINE, get_latest_date, load_bets, setup
 from src.sidebar import render_sidebar
 from utils.paths import (
     ACCURACY_OVER_SAMPLES,
@@ -13,8 +13,6 @@ from utils.paths import (
     LEAGUE_ACCURACIES,
     MODEL_METRICS,
 )
-
-LAST_UPDATED = "2024-06-24"  # TODO: automatically update this date
 
 # TODO: Retrieve the model validations from S3
 
@@ -125,7 +123,7 @@ def display_league_accuracies(league_accuracies):
 
 
 if __name__ == "__main__":
-    setup(f"Model Validation - Last updated on  {LAST_UPDATED}", "✔️")
+    setup(f"Model Validation - Updated {get_latest_date()}")
 
     data = load_bets()
 

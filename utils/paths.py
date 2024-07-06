@@ -19,7 +19,9 @@ MODEL_VALIDATION_DIR = DATA_DIR / "model_validation"
 BETS_PATH = DATA_DIR / "bets_ledger.csv"
 
 # Model validation
-ACCURACY_OVER_SAMPLES = MODEL_VALIDATION_DIR / "LightGBM_Accuracy_Over_Samples.png"
-HISTORICAL_ACCURACY = MODEL_VALIDATION_DIR / "LightGBM_Historical_Accuracy.png"
-LEAGUE_ACCURACIES = MODEL_VALIDATION_DIR / "LightGBM_league_accuracies.json"
-MODEL_METRICS = MODEL_VALIDATION_DIR / "LightGBM_metrics.json"
+ACCURACY_OVER_SAMPLES = (
+    MODEL_VALIDATION_DIR / "OutcomePrediction_Accuracy_Over_Samples.png"
+)
+HISTORICAL_ACCURACY = MODEL_VALIDATION_DIR / "OutcomePrediction_Historical_Accuracy.png"
+LEAGUE_ACCURACIES = MODEL_VALIDATION_DIR / "OutcomePrediction_league_accuracies.json"
+MODEL_METRICS = MODEL_VALIDATION_DIR / "OutcomePrediction_metrics.json"

@@ -1,7 +1,10 @@
+import os
+from datetime import datetime
+
 import pandas as pd
 import streamlit as st
 
-from utils.paths import BETS_PATH
+from utils.paths import BETS_PATH, MODEL_METRICS
 
 # Suppress SettingWithCopyWarning warnings
 pd.options.mode.chained_assignment = None
@@ -123,22 +126,6 @@ def load_bets():
         st.error("The bets ledger file is empty.")
         return pd.DataFrame()
 
-    # Select only the required columns
-    data = data[
-        [
-            "Date",
-            "Team",
-            "League",
-            "Game",
-            "Type",
-            "Sportbook",
-            "Bet",
-            "Result",
-            "Odds",
-            "Wager",
-        ]
-    ]
-
     # Convert 'Date' to datetime
     data["Date"] = pd.to_datetime(data["Date"])
 
@@ -154,3 +141,8 @@ def load_bets():
     )
 
     return data
+
+
+def get_latest_date():
+    modified_time = os.path.getmtime(MODEL_METRICS)
+    return datetime.fromtimestamp(modified_time).strftime("%Y-%m-%d")

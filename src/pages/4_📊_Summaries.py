@@ -85,7 +85,7 @@ def render_win_rate_table(data):
 
 
 if __name__ == "__main__":
-    setup("Summaries by Bet and League", "⭕")
+    setup("Summaries by Bet and League")
 
     data = load_bets()
 

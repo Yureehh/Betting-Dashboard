@@ -137,13 +137,12 @@ def render_roi_by_wager_type(data):
 
 
 if __name__ == "__main__":
-    setup("Yureeh Betting Dashboard", "📈")
+    setup("Yureeh Betting Dashboard")
 
     data = load_bets()
 
     if not data.empty:
         filtered_data = render_sidebar(data)
-        print(filtered_data.columns)
         render_metrics(filtered_data)
         render_profit_timeline(filtered_data)
         render_bet_df(filtered_data)
