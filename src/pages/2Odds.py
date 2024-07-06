@@ -137,7 +137,7 @@ def plot_roi_by_odds(data):
 
 
 if __name__ == "__main__":
-    setup("Stats by Odds", "📈")
+    setup("Stats by Odds", "🎲")
 
     data = load_bets()
 

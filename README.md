@@ -7,10 +7,19 @@
 
 ## Features
 
+- **Public Ledger:** The dashboard serves as a transparent ledger for all bets, enhancing accountability and transparency.
+- **Daily Updates:** The CSV file with all bets is updated daily to ensure the dashboard reflects the most recent data.
 - **Interactive Visualizations:** Gain insights into your betting history with interactive charts and tables.
 - **Data Filtering:** Easily filter and search through your bet history.
 - **Performance Analysis:** View summaries and statistics of your betting performance.
-- **Customizable Dashboard:** Personalize the dashboard to suit your preferences.
+
+## Prerequisites
+
+To run this project locally, you will need the following installed:
+
+- Python 3.9 or higher
+- Poetry (Python dependency management tool)
+
 
 ## Installation
 

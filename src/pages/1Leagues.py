@@ -114,7 +114,7 @@ def plot_roi_by_league(data):
 
 
 if __name__ == "__main__":
-    setup("Stats by League", "📈")
+    setup("Stats by League", "🏆")
 
     data = load_bets()
 
