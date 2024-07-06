@@ -79,7 +79,7 @@ def render_profit_timeline(data):
     max_date = monthly_profit["Month_dt"].max() + pd.DateOffset(months=1)
 
     # Create a Plotly figure
-    fig = px.line(monthly_profit, x="Month", y=y_axis)
+    fig = px.line(monthly_profit, x="Month", y=y_axis, markers=True)
 
     # Update the layout to include axis titles and wider plot
     fig.update_layout(
