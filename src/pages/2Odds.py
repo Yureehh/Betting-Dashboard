@@ -4,7 +4,7 @@ import streamlit as st
 from src.commons import BREAK_LINE, load_bets, setup
 from src.sidebar import render_sidebar
 
-odds_group_str = "Model Odds Group"
+odds_group_str = "Odds Group"
 
 
 def group_odds(odds):
@@ -36,7 +36,7 @@ def plot_bet_number_percentage(data):
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### Bet Number Percentage by Model Odds Group")
+    st.write("### Bet Number Percentage by Odds Group")
     bet_counts = data[odds_group_str].value_counts().reset_index()
     bet_counts.columns = [odds_group_str, "Count"]
     fig = px.pie(
@@ -56,7 +56,7 @@ def plot_profit_by_odds(data):
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### Profit by Model Odds")
+    st.write("### Profit by Odds")
     profit_by_odds = data.groupby(odds_group_str)["Profit"].sum().reset_index()
     profit_by_odds["Profit"] = profit_by_odds["Profit"].round(2)
     fig = px.bar(
@@ -85,7 +85,7 @@ def plot_winrate_by_odds(data):
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### Winrate by Model Odds")
+    st.write("### Winrate by Odds")
     data.loc[:, "Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
     winrate_by_odds = data.groupby(odds_group_str)["Win"].mean().reset_index()
     winrate_by_odds["Winrate"] = (winrate_by_odds["Win"] * 100).round(2)
@@ -115,7 +115,7 @@ def plot_roi_by_odds(data):
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### ROI by Model Odds")
+    st.write("### ROI by Odds")
     roi_by_odds = data.groupby(odds_group_str).agg({"Profit": "sum", "Wager": "sum"})
     roi_by_odds["ROI"] = ((roi_by_odds["Profit"] / roi_by_odds["Wager"]) * 100).round(2)
     roi_by_odds = roi_by_odds.reset_index()
@@ -137,16 +137,14 @@ def plot_roi_by_odds(data):
 
 
 if __name__ == "__main__":
-    setup("Stats by Model Odds", "🎲")
+    setup("Stats by Odds", "🎲")
 
     data = load_bets()
 
     if not data.empty:
         filtered_data = render_sidebar(data)
 
-        filtered_data.loc[:, odds_group_str] = filtered_data["ModelOdds"].apply(
-            group_odds
-        )
+        filtered_data.loc[:, odds_group_str] = filtered_data["Odds"].apply(group_odds)
 
         plot_bet_number_percentage(filtered_data)
         plot_profit_by_odds(filtered_data)

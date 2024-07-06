@@ -137,14 +137,13 @@ def plot_roi_by_odds(data):
 
 
 if __name__ == "__main__":
-    setup("Stats by Model Odds", "📈")
+    setup("Stats by Model Odds", "🎲")
 
     data = load_bets()
-    print(data.columns)
 
     if not data.empty:
         filtered_data = render_sidebar(data)
-        print(filtered_data.columns)
+
         filtered_data.loc[:, odds_group_str] = filtered_data["ModelOdds"].apply(
             group_odds
         )
