@@ -19,7 +19,7 @@ def render_sidebar(data):
     # Date filters
     col1, col2 = st.sidebar.columns(2)
     with col1:
-        default_start_date = pd.Timestamp("2024-06-01")
+        default_start_date = pd.Timestamp("2024-08-01")
         start_date = st.date_input("**Start date**", value=default_start_date)
     with col2:
         end_date = st.date_input("**End date**", value=None)
