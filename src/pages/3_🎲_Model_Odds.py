@@ -86,7 +86,9 @@ def plot_winrate_by_odds(data):
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
     st.write("### Winrate by Model Odds")
-    data.loc[:, "Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
+    data.loc[:, "Win"] = data["Result"].apply(
+        lambda x: 1 if x in ["W", "Win", "Won"] else 0
+    )
     winrate_by_odds = data.groupby(odds_group_str)["Win"].mean().reset_index()
     winrate_by_odds["Winrate"] = (winrate_by_odds["Win"] * 100).round(2)
     fig = px.bar(
