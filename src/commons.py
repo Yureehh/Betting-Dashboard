@@ -100,7 +100,7 @@ def compute_profit(row):
     Returns:
         float: The computed profit for the bet.
     """
-    if row["Result"] in ["W"]:
+    if row["Result"] in ["W", "Win", "Won"]:
         return row["Wager"] * (row["Odds"] - 1)
     elif row["Result"] in ["L", "Loss", "Lose"]:
         return -row["Wager"]
@@ -125,6 +125,8 @@ def load_bets():
     except pd.errors.EmptyDataError:
         st.error("The bets ledger file is empty.")
         return pd.DataFrame()
+
+    data = data.dropna()
 
     # Convert 'Date' to datetime
     data["Date"] = pd.to_datetime(data["Date"])
