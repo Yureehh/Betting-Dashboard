@@ -61,7 +61,7 @@ def plot_winrate_by_league(data):
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
     st.write("### Winrate by League")
-    data.loc[:, "Win"] = data["Result"].apply(lambda x: 1 if x in ["W"] else 0)
+    data.loc[:, "Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
     winrate_by_league = data.groupby("League")["Win"].mean().reset_index()
     winrate_by_league["Winrate"] = (winrate_by_league["Win"] * 100).round(2)
     fig = px.bar(

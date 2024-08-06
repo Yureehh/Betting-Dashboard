@@ -75,7 +75,7 @@ def render_win_rate_table(data):
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
     st.write("### Win Rate")
-    data.loc[:, "Win"] = data["Result"].apply(lambda x: 1 if x in ["W"] else 0)
+    data.loc[:, "Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
     win_rate_table = data.pivot_table(
         values="Win", index="Type", columns="League", aggfunc="mean", fill_value=0
     )
