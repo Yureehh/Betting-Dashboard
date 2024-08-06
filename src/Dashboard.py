@@ -15,7 +15,7 @@ def render_metrics(data):
     """
     # Calculate metrics
     total_bets = len(data)
-    total_wins = len(data[data["Result"] in ["W", "Win", "Won"]])
+    total_wins = len(data[data["Result"] in ["W"]])
     total_winrate = (total_wins / total_bets) * 100 if total_bets > 0 else 0
     total_profit = data["Profit"].sum()
     total_roi = (

@@ -100,7 +100,7 @@ def compute_profit(row):
     Returns:
         float: The computed profit for the bet.
     """
-    if row["Result"] in ["W", "Win", "Won"]:
+    if row["Result"] in ["W"]:
         return row["Wager"] * (row["Odds"] - 1)
     elif row["Result"] in ["L", "Loss", "Lose"]:
         return -row["Wager"]
