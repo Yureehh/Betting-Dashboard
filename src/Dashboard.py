@@ -14,7 +14,7 @@ def render_metrics(data):
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
     # Calculate metrics
-    total_bets = len(data)
+    total_bets = len(data[data["Result"].notnull()])
     total_wins = len(data[data["Result"] == "W"])
     total_winrate = (total_wins / total_bets) * 100 if total_bets > 0 else 0
     total_profit = data["Profit"].sum()
