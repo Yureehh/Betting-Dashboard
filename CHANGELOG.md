@@ -1,3 +1,19 @@
+## 1.0.0 (2024-08-14)
+
+### Fix
+
+- **global**: fixed result reporting in csv
+- **Dashboard.py**: fixed profit timeline
+- **Odds**: inverted odds and model_odds
+- **Icons**: fixed pages icons
+- **Model_Validation**: Added last update day
+- **Icons**: Changed icon for every page
+
+### Refactor
+
+- **global**: Revamped whole code. Moved bets to a GSheet
+- **global**: refactored names and images
+
 ## 0.4.1 (2024-06-24)
 
 ### Fix
