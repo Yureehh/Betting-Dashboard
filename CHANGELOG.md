@@ -1,3 +1,13 @@
+## 1.1.0 (2024-08-15)
+
+### Feat
+
+- **pending-bets**: added new page for pending bets
+
+### Fix
+
+- **pages**: improved style and code of pages
+
 ## 1.0.0 (2024-08-14)
 
 ### Fix
