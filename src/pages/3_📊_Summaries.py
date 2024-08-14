@@ -1,7 +1,29 @@
 import streamlit as st
 
-from src.commons import VERTICAL_SPACE, load_bets, setup
-from src.sidebar import render_sidebar
+from commons import VERTICAL_SPACE, load_bets, setup
+from sidebar import render_sidebar
+
+
+def render_table(data, values, index, columns, aggfunc, title, round_digits=2):
+    """
+    General function to render a table using Streamlit, displaying aggregated data.
+
+    Args:
+        data (pd.DataFrame): The data frame containing the bets ledger.
+        values (str): The column to aggregate.
+        index (str): The column to group by for the rows.
+        columns (str): The column to group by for the columns.
+        aggfunc (str or function): The aggregation function (e.g., 'sum', 'mean', 'count').
+        title (str): The title of the table to display.
+        round_digits (int): The number of decimal places to round the results. Default is 2.
+    """
+    st.write(f"### {title}")
+    table = data.pivot_table(
+        values=values, index=index, columns=columns, aggfunc=aggfunc, fill_value=0
+    )
+    table = table.round(round_digits)
+    st.dataframe(table)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def render_profit_table(data):
@@ -11,13 +33,14 @@ def render_profit_table(data):
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### Profit")
-    profit_table = data.pivot_table(
-        values="Profit", index="Type", columns="League", aggfunc="sum", fill_value=0
+    render_table(
+        data,
+        values="Profit",
+        index="Type",
+        columns="League",
+        aggfunc="sum",
+        title="Profit (Units)",
     )
-    profit_table = profit_table.round(2)
-    st.dataframe(profit_table)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def render_bet_count_table(data):
@@ -27,12 +50,14 @@ def render_bet_count_table(data):
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### Bets Count")
-    bet_count_table = data.pivot_table(
-        values="Date", index="Type", columns="League", aggfunc="count", fill_value=0
+    render_table(
+        data,
+        values="Date",
+        index="Type",
+        columns="League",
+        aggfunc="count",
+        title="Bets Count",
     )
-    st.dataframe(bet_count_table)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def render_total_wager_table(data):
@@ -42,13 +67,14 @@ def render_total_wager_table(data):
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### Total Wager")
-    wager_table = data.pivot_table(
-        values="Wager", index="Type", columns="League", aggfunc="sum", fill_value=0
+    render_table(
+        data,
+        values="Wager",
+        index="Type",
+        columns="League",
+        aggfunc="sum",
+        title="Total Wager",
     )
-    wager_table = wager_table.round(2)
-    st.dataframe(wager_table)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def render_average_odds_table(data):
@@ -58,13 +84,14 @@ def render_average_odds_table(data):
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### Average Odds")
-    odds_table = data.pivot_table(
-        values="Odds", index="Type", columns="League", aggfunc="mean", fill_value=0
+    render_table(
+        data,
+        values="Odds",
+        index="Type",
+        columns="League",
+        aggfunc="mean",
+        title="Average Odds",
     )
-    odds_table = odds_table.round(2)
-    st.dataframe(odds_table)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def render_win_rate_table(data):
@@ -74,14 +101,16 @@ def render_win_rate_table(data):
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### Win Rate")
-    data.loc[:, "Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
-    win_rate_table = data.pivot_table(
-        values="Win", index="Type", columns="League", aggfunc="mean", fill_value=0
+    data["Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
+    render_table(
+        data,
+        values="Win",
+        index="Type",
+        columns="League",
+        aggfunc="mean",
+        title="Win Rate",
+        round_digits=2,
     )
-    win_rate_table = (win_rate_table * 100).round(2)
-    st.dataframe(win_rate_table)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":

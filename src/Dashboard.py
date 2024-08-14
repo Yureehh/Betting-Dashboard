@@ -82,7 +82,7 @@ def render_profit_timeline(data):
     data["Date"] = pd.to_datetime(data["Date"])
 
     # Group by month and sum profits
-    monthly_profit = data.resample("M", on="Date")["Profit"].sum().reset_index()
+    monthly_profit = data.resample("ME", on="Date")["Profit"].sum().reset_index()
     monthly_profit.columns = [x_axis, y_axis]
 
     # Create a separate column for month in string format for display

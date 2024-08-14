@@ -1,10 +1,10 @@
 import plotly.express as px
 import streamlit as st
 
-from src.commons import VERTICAL_SPACE, load_bets, setup
-from src.sidebar import render_sidebar
+from commons import VERTICAL_SPACE, load_bets, setup
+from sidebar import render_sidebar
 
-odds_group_str = "Odds Group"
+ODDS_GROUP_STR = "Odds Group"
 
 
 def group_odds(odds):
@@ -31,40 +31,41 @@ def group_odds(odds):
 
 def plot_bet_number_percentage(data):
     """
-    Plot pie chart of bet number percentage given odds group.
+    Plot a pie chart of bet number percentage by odds group.
 
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
     st.write("### Bet Number Percentage by Odds Group")
-    bet_counts = data[odds_group_str].value_counts().reset_index()
-    bet_counts.columns = [odds_group_str, "Count"]
+    bet_counts = data[ODDS_GROUP_STR].value_counts().reset_index()
+    bet_counts.columns = [ODDS_GROUP_STR, "Count"]
     fig = px.pie(
         bet_counts,
         values="Count",
-        names=odds_group_str,
+        names=ODDS_GROUP_STR,
     )
     fig.update_layout(yaxis=dict(autorange="reversed"))
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def plot_profit_by_odds(data):
     """
-    Plot profit by odds.
+    Plot profit by odds group.
 
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### Profit by Odds")
-    profit_by_odds = data.groupby(odds_group_str)["Profit"].sum().reset_index()
+    st.write("### Profit by Odds Group")
+    profit_by_odds = data.groupby(ODDS_GROUP_STR)["Profit"].sum().reset_index()
     profit_by_odds["Profit"] = profit_by_odds["Profit"].round(2)
+    profit_by_odds = profit_by_odds.sort_values(by="Profit", ascending=False)
     fig = px.bar(
         profit_by_odds,
         x="Profit",
-        y=odds_group_str,
+        y=ODDS_GROUP_STR,
         orientation="h",
-        labels={odds_group_str: "", "Profit": "Profit (Units)"},
+        labels={ODDS_GROUP_STR: "", "Profit": "Profit (Units)"},
         color=profit_by_odds["Profit"].apply(
             lambda x: "#00CC96" if x > 0 else "#FF6692"
         ),
@@ -74,57 +75,56 @@ def plot_profit_by_odds(data):
     fig.update_traces(texttemplate="%{text}", textposition="outside")
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def plot_winrate_by_odds(data):
     """
-    Plot winrate by odds.
+    Plot winrate by odds group.
 
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### Winrate by Odds")
-    data.loc[:, "Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
-    winrate_by_odds = data.groupby(odds_group_str)["Win"].mean().reset_index()
+    st.write("### Winrate by Odds Group")
+    data["Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
+    winrate_by_odds = data.groupby(ODDS_GROUP_STR)["Win"].mean().reset_index()
     winrate_by_odds["Winrate"] = (winrate_by_odds["Win"] * 100).round(2)
+    winrate_by_odds = winrate_by_odds.sort_values(by="Winrate", ascending=False)
     fig = px.bar(
         winrate_by_odds,
         x="Winrate",
-        y=odds_group_str,
+        y=ODDS_GROUP_STR,
         orientation="h",
-        labels={odds_group_str: "", "Winrate": "Winrate %"},
-        color=winrate_by_odds["Winrate"].apply(
-            lambda x: "#00CC96" if x > 50 else "#FF6692"
-        ),
-        color_discrete_map={"#00CC96": "#00CC96", "#FF6692": "#FF6692"},
+        labels={ODDS_GROUP_STR: "", "Winrate": "Winrate %"},
+        color_discrete_sequence=["#0057B8"],  # Darker blue for winrate
         text="Winrate",
     )
     fig.update_traces(texttemplate="%{text}%", textposition="outside")
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def plot_roi_by_odds(data):
     """
-    Plot ROI by odds.
+    Plot ROI by odds group.
 
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### ROI by Odds")
-    roi_by_odds = data.groupby(odds_group_str).agg({"Profit": "sum", "Wager": "sum"})
+    st.write("### ROI by Odds Group")
+    roi_by_odds = data.groupby(ODDS_GROUP_STR).agg({"Profit": "sum", "Wager": "sum"})
     roi_by_odds["ROI"] = ((roi_by_odds["Profit"] / roi_by_odds["Wager"]) * 100).round(2)
     roi_by_odds = roi_by_odds.reset_index()
+    roi_by_odds = roi_by_odds.sort_values(by="ROI", ascending=False)
     fig = px.bar(
         roi_by_odds,
         x="ROI",
-        y=odds_group_str,
+        y=ODDS_GROUP_STR,
         orientation="h",
-        labels={odds_group_str: "", "ROI": "ROI %"},
+        labels={ODDS_GROUP_STR: "", "ROI": "ROI %"},
         color=roi_by_odds["ROI"].apply(lambda x: "#00CC96" if x > 0 else "#FF6692"),
         color_discrete_map={"#00CC96": "#00CC96", "#FF6692": "#FF6692"},
         text="ROI",
@@ -132,7 +132,7 @@ def plot_roi_by_odds(data):
     fig.update_traces(texttemplate="%{text}%", textposition="outside")
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     if not data.empty:
         filtered_data = render_sidebar(data)
 
-        filtered_data.loc[:, odds_group_str] = filtered_data["Odds"].apply(group_odds)
+        filtered_data[ODDS_GROUP_STR] = filtered_data["Odds"].apply(group_odds)
 
         plot_bet_number_percentage(filtered_data)
         plot_profit_by_odds(filtered_data)

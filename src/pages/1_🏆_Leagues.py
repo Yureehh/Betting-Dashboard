@@ -1,13 +1,13 @@
 import plotly.express as px
 import streamlit as st
 
-from src.commons import VERTICAL_SPACE, load_bets, setup
-from src.sidebar import render_sidebar
+from commons import VERTICAL_SPACE, load_bets, setup
+from sidebar import render_sidebar
 
 
 def plot_bet_number_percentage(data):
     """
-    Plot pie chart of bet number percentage given league.
+    Plot a pie chart of bet number percentage by league.
 
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
@@ -20,7 +20,7 @@ def plot_bet_number_percentage(data):
         values="Count",
         names="League",
     )
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
@@ -34,6 +34,9 @@ def plot_profit_by_league(data):
     st.write("### Profit by League")
     profit_by_league = data.groupby("League")["Profit"].sum().reset_index()
     profit_by_league["Profit"] = profit_by_league["Profit"].round(2)
+    profit_by_league = profit_by_league.sort_values(
+        by="Profit", ascending=False
+    )  # Optimize sorting for display
     fig = px.bar(
         profit_by_league,
         x="Profit",
@@ -49,7 +52,7 @@ def plot_profit_by_league(data):
     fig.update_traces(texttemplate="%{text}", textposition="outside")
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
@@ -61,25 +64,25 @@ def plot_winrate_by_league(data):
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
     st.write("### Winrate by League")
-    data.loc[:, "Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
+    data["Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
     winrate_by_league = data.groupby("League")["Win"].mean().reset_index()
     winrate_by_league["Winrate"] = (winrate_by_league["Win"] * 100).round(2)
+    winrate_by_league = winrate_by_league.sort_values(
+        by="Winrate", ascending=False
+    )  # Optimize sorting for display
     fig = px.bar(
         winrate_by_league,
         x="Winrate",
         y="League",
         orientation="h",
         labels={"League": "", "Winrate": "Winrate %"},
-        color=winrate_by_league["Winrate"].apply(
-            lambda x: "#00CC96" if x > 50 else "#FF6692"
-        ),
-        color_discrete_map={"#00CC96": "#00CC96", "#FF6692": "#FF6692"},
+        color_discrete_sequence=["#0057B8"],  # Darker blue for winrate
         text="Winrate",
     )
     fig.update_traces(texttemplate="%{text}%", textposition="outside")
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
@@ -96,6 +99,9 @@ def plot_roi_by_league(data):
         (roi_by_league["Profit"] / roi_by_league["Wager"]) * 100
     ).round(2)
     roi_by_league = roi_by_league.reset_index()
+    roi_by_league = roi_by_league.sort_values(
+        by="ROI", ascending=False
+    )  # Optimize sorting for display
     fig = px.bar(
         roi_by_league,
         x="ROI",
@@ -109,7 +115,7 @@ def plot_roi_by_league(data):
     fig.update_traces(texttemplate="%{text}%", textposition="outside")
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
-    st.plotly_chart(fig)
+    st.plotly_chart(fig, use_container_width=True)
     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
