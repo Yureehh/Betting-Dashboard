@@ -5,14 +5,14 @@ import plotly.express as px
 import streamlit as st
 from PIL import Image
 
-from src.commons import BREAK_LINE, get_latest_date, load_bets, setup
-from src.sidebar import render_sidebar
-from utils.paths import (
-    ACCURACY_OVER_SAMPLES,
-    HISTORICAL_ACCURACY,
-    LEAGUE_ACCURACIES,
-    MODEL_METRICS,
+from paths import (
+    ACCURACY_OVER_SAMPLES_PATH,
+    HISTORICAL_ACCURACY_PATH,
+    LEAGUE_ACCURACIES_PATH,
+    MODEL_METRICS_PATH,
 )
+from src.commons import VERTICAL_SPACE, get_latest_date, load_bets, setup
+from src.sidebar import render_sidebar
 
 # TODO: Retrieve the model validations from S3
 
@@ -58,7 +58,7 @@ def display_metrics(metrics):
     cols[1].metric("Precision", f"{metrics['precision']:.2%}")
     cols[2].metric("Recall", f"{metrics['recall']:.2%}")
     cols[3].metric("F1 Score", f"{metrics['f1']:.2%}")
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def plot_image(title, image_path, caption):
@@ -73,7 +73,7 @@ def plot_image(title, image_path, caption):
     st.write(f"### {title}")
     image = load_image(image_path)
     st.image(image, caption=caption)
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def display_league_accuracies(league_accuracies):
@@ -119,7 +119,7 @@ def display_league_accuracies(league_accuracies):
 
     # Display the chart in Streamlit
     st.plotly_chart(fig, use_container_width=True)
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
@@ -131,22 +131,24 @@ if __name__ == "__main__":
         filtered_data = render_sidebar(data)
 
         # Load and display model metrics
-        display_metrics(load_json(MODEL_METRICS))
+        display_metrics(load_json(MODEL_METRICS_PATH))
 
         # Plot historical accuracy
         plot_image(
-            "Historical Accuracy", HISTORICAL_ACCURACY, "Historical Accuracy Over Time"
+            "Historical Accuracy",
+            HISTORICAL_ACCURACY_PATH,
+            "Historical Accuracy Over Time",
         )
 
         # Plot accuracy over samples
         plot_image(
             "Accuracy Over Samples",
-            ACCURACY_OVER_SAMPLES,
+            ACCURACY_OVER_SAMPLES_PATH,
             "Accuracy Over Different Sample Sizes",
         )
 
         # Load and display league accuracies
-        league_accuracies = load_json(LEAGUE_ACCURACIES)
+        league_accuracies = load_json(LEAGUE_ACCURACIES_PATH)
         display_league_accuracies(league_accuracies)
 
         st.markdown("<hr>", unsafe_allow_html=True)

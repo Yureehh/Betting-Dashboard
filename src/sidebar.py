@@ -24,22 +24,30 @@ def render_sidebar(data):
     with col2:
         end_date = st.date_input("**End date**", value=None)
 
+    # Apply date filters
     if start_date:
         data = data[data["Date"] >= pd.Timestamp(start_date)]
-
     if end_date:
         data = data[data["Date"] <= pd.Timestamp(end_date)]
 
-    if leagues := st.sidebar.multiselect("**League**", data["League"].unique()):
+    if leagues := st.sidebar.multiselect(
+        "**League**", options=sorted(data["League"].unique())
+    ):
         data = data[data["League"].isin(leagues)]
 
-    if teams := st.sidebar.multiselect("**Team**", data["Team"].unique()):
+    if teams := st.sidebar.multiselect(
+        "**Team**", options=sorted(data["Team"].unique())
+    ):
         data = data[data["Team"].isin(teams)]
 
-    if bet_types := st.sidebar.multiselect("**Bet Type**", data["Type"].unique()):
+    if bet_types := st.sidebar.multiselect(
+        "**Bet Type**", options=sorted(data["Type"].unique())
+    ):
         data = data[data["Type"].isin(bet_types)]
 
-    if bet_results := st.sidebar.multiselect("**Bet Result**", data["Result"].unique()):
+    if bet_results := st.sidebar.multiselect(
+        "**Bet Result**", options=sorted(data["Result"].unique())
+    ):
         data = data[data["Result"].isin(bet_results)]
 
     return data

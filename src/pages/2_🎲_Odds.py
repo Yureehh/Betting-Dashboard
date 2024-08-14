@@ -1,7 +1,7 @@
 import plotly.express as px
 import streamlit as st
 
-from src.commons import BREAK_LINE, load_bets, setup
+from src.commons import VERTICAL_SPACE, load_bets, setup
 from src.sidebar import render_sidebar
 
 odds_group_str = "Odds Group"
@@ -46,7 +46,7 @@ def plot_bet_number_percentage(data):
     )
     fig.update_layout(yaxis=dict(autorange="reversed"))
     st.plotly_chart(fig)
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def plot_profit_by_odds(data):
@@ -75,7 +75,7 @@ def plot_profit_by_odds(data):
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     st.plotly_chart(fig)
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def plot_winrate_by_odds(data):
@@ -105,7 +105,7 @@ def plot_winrate_by_odds(data):
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     st.plotly_chart(fig)
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def plot_roi_by_odds(data):
@@ -133,7 +133,7 @@ def plot_roi_by_odds(data):
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     st.plotly_chart(fig)
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":

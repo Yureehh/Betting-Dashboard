@@ -91,4 +91,8 @@ target/
 # Poetry lock file
 poetry.lock
 
+# Devcontainer
 devcontainer/
+
+# GSHEET CREDENTIALS
+lol-oracle-google-credentials.json

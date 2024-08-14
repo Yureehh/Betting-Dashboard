@@ -1,6 +1,6 @@
 import streamlit as st
 
-from src.commons import BREAK_LINE, load_bets, setup
+from src.commons import VERTICAL_SPACE, load_bets, setup
 from src.sidebar import render_sidebar
 
 
@@ -17,7 +17,7 @@ def render_profit_table(data):
     )
     profit_table = profit_table.round(2)
     st.dataframe(profit_table)
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def render_bet_count_table(data):
@@ -32,7 +32,7 @@ def render_bet_count_table(data):
         values="Date", index="Type", columns="League", aggfunc="count", fill_value=0
     )
     st.dataframe(bet_count_table)
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def render_total_wager_table(data):
@@ -48,7 +48,7 @@ def render_total_wager_table(data):
     )
     wager_table = wager_table.round(2)
     st.dataframe(wager_table)
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def render_average_odds_table(data):
@@ -64,7 +64,7 @@ def render_average_odds_table(data):
     )
     odds_table = odds_table.round(2)
     st.dataframe(odds_table)
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def render_win_rate_table(data):
@@ -81,7 +81,7 @@ def render_win_rate_table(data):
     )
     win_rate_table = (win_rate_table * 100).round(2)
     st.dataframe(win_rate_table)
-    st.markdown(BREAK_LINE, unsafe_allow_html=True)
+    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":

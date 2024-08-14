@@ -1,15 +1,14 @@
 import os
 from datetime import datetime
 
+import gspread
 import pandas as pd
 import streamlit as st
+from oauth2client.service_account import ServiceAccountCredentials
 
-from utils.paths import BETS_PATH, MODEL_METRICS
-
-# Suppress SettingWithCopyWarning warnings
-pd.options.mode.chained_assignment = None
-
-BREAK_LINE = "<br><br>"
+VERTICAL_SPACE = "<br><br>"
+SHEET_URL = "https://docs.google.com/spreadsheets/d/1rrBtklorbir3zrsHkzTAFlmahxu_S9Gnyrg1RQhRtHw"
+CREDENTIALS_FILE = "lol-oracle-google-credentials.json"
 
 
 def setup(page_title, page_icon=""):
@@ -25,7 +24,7 @@ def setup(page_title, page_icon=""):
         layout="wide",
         initial_sidebar_state="expanded",
         menu_items={
-            "About": "Public ledger of my betting activity.\nTwitter: @Yureehwastaken",
+            "About": "Public ledger of my betting activity.\nTwitter: @Yureehwastaken"
         },
         page_icon=page_icon,
     )
@@ -37,114 +36,102 @@ def setup(page_title, page_icon=""):
 
 def apply_custom_styles():
     """
-    Apply custom CSS styles to the Streamlit page.
+    Apply custom CSS styles to the Streamlit page by loading from an external CSS file.
     """
-    st.markdown(
-        """
-        <style>
-            html, body, div, span, applet, object, iframe,
-            h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-            a, abbr, acronym, address, big, cite, code,
-            del, dfn, em, img, ins, kbd, q, s, samp,
-            small, strike, strong, sub, sup, tt, var,
-            b, u, i, center,
-            dl, dt, dd, ol, ul, li,
-            fieldset, form, label, legend,
-            table, caption, tbody, tfoot, thead, tr, th, td,
-            article, aside, canvas, details, embed,
-            figure, figcaption, footer, header, hgroup,
-            menu, nav, output, ruby, section, summary,
-            time, mark, audio, video,
-            .main .block-container, [class*="css"] {
-                font-family: 'Source Code Pro', monospace;
-            }
-
-            h1, .main .block-container {
-                font-family: 'Source Code Pro', monospace;
-            }
-
-            .main .block-container {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 2rem;
-            }
-            .stMetric {
-                text-align: center;
-            }
-            .block-container table {
-                margin-top: 2rem;
-            }
-            .footer {
-                position: fixed;
-                left: 0;
-                bottom: 0;
-                width: 100%;
-                background-color: #f1f1f1;
-                text-align: center;
-                padding: 1rem;
-            }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+    with open("styles/styles.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
-def compute_profit(row):
+def compute_profit(data):
     """
-    Compute the profit for each bet.
+    Compute the profit for each bet using vectorized operations.
 
     Args:
-        row (pd.Series): A row of the DataFrame containing bet information.
+        data (pd.DataFrame): The DataFrame containing bet information.
 
     Returns:
-        float: The computed profit for the bet.
+        pd.Series: A Series with the computed profit for each bet.
     """
-    if row["Result"] in ["W", "Win", "Won"]:
-        return row["Wager"] * (row["Odds"] - 1)
-    elif row["Result"] in ["L", "Loss", "Lose"]:
-        return -row["Wager"]
-    else:  # Draw
-        return 0
+    profit = data["Wager"] * (data["Odds"] - 1)
+    profit[data["Result"].isin(["L", "Loss", "Lose"])] = -data["Wager"]
+    profit[data["Result"] == "Draw"] = 0
+    return profit
+
+
+def load_bets_from_google_sheet(credentials_file, sheet_url):
+    """
+    Load bets data from Google Sheets.
+
+    Args:
+        sheet_url (str): The URL of the Google Sheets document.
+        credentials_file (str): The path to the JSON credentials file.
+
+    Returns:
+        pd.DataFrame: DataFrame containing the bets data.
+    """
+    scope = [
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/drive",
+    ]
+    creds = ServiceAccountCredentials.from_json_keyfile_name(credentials_file, scope)
+    client = gspread.authorize(creds)
+
+    # Open the Google Sheet by URL
+    sheet = client.open_by_url(sheet_url).sheet1  # Assumes data is in the first sheet
+
+    # Extract data into a DataFrame
+    data = sheet.get_all_records()
+    return pd.DataFrame(data)
+
+
+def process_bets_data(data):
+    """
+    Process the loaded bets data by computing additional columns.
+
+    Args:
+        data (pd.DataFrame): The DataFrame containing the loaded bet data.
+
+    Returns:
+        pd.DataFrame: The processed DataFrame.
+    """
+    if data.empty:
+        return data
+
+    data = data.dropna()
+    data["Date"] = pd.to_datetime(data["Date"])
+    data["To_Win"] = data["Wager"] * (data["Odds"] - 1)
+    data["Profit"] = compute_profit(data)
+    data["ROI"] = (data["Profit"] / data["Wager"] * 100).round(2).astype(str) + "%"
+    return data
 
 
 def load_bets():
     """
-    Load the bets ledger CSV file and compute additional columns.
+    Load and process the bets ledger data from Google Sheets.
 
     Returns:
-        pd.DataFrame: A DataFrame with the bet data and computed columns.
+        pd.DataFrame: The processed bets ledger DataFrame.
     """
     try:
-        # Load the CSV file
-        #  TODO: read it from s3
-        data = pd.read_csv(BETS_PATH)
+        data = load_bets_from_google_sheet(CREDENTIALS_FILE, SHEET_URL)
+        return process_bets_data(data)
     except FileNotFoundError:
-        st.error("The bets ledger file was not found. Please check the path.")
+        st.error("The Google credentials file was not found. Please check the path.")
         return pd.DataFrame()
-    except pd.errors.EmptyDataError:
-        st.error("The bets ledger file is empty.")
+    except gspread.exceptions.SpreadsheetNotFound:
+        st.error("The Google Sheet was not found. Please check the URL.")
         return pd.DataFrame()
 
-    data = data.dropna()
 
-    # Convert 'Date' to datetime
-    data["Date"] = pd.to_datetime(data["Date"])
+def get_latest_date(filepath):
+    """
+    Get the latest modification date of a file.
 
-    # Compute the 'To_Win' column
-    data["To_Win"] = data["Wager"] * (data["Odds"] - 1)
+    Args:
+        filepath (str): The file path to check.
 
-    # Compute the 'Profit' column
-    data["Profit"] = data.apply(compute_profit, axis=1)
-
-    # Compute the ROI column
-    data["ROI"] = (data["Profit"] / data["Wager"] * 100).apply(
-        lambda x: f"{str(round(x, 2))}%"
-    )
-
-    return data
-
-
-def get_latest_date():
-    modified_time = os.path.getmtime(MODEL_METRICS)
+    Returns:
+        str: The last modification date formatted as 'YYYY-MM-DD'.
+    """
+    modified_time = os.path.getmtime(filepath)
     return datetime.fromtimestamp(modified_time).strftime("%Y-%m-%d")
