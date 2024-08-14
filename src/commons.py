@@ -38,89 +38,116 @@ def apply_custom_styles():
     """
     Apply custom CSS styles to the Streamlit page by loading from an external CSS file.
     """
-    with open("styles/styles.css") as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    try:
+        with open("styles/styles.css") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    except FileNotFoundError:
+        st.warning("Custom styles not applied. 'styles.css' file not found.")
 
 
-def compute_profit(data):
+def compute_profit(bets_df):
     """
     Compute the profit for each bet using vectorized operations.
 
     Args:
-        data (pd.DataFrame): The DataFrame containing bet information.
+        bets_df (pd.DataFrame): The DataFrame containing bet information.
 
     Returns:
         pd.Series: A Series with the computed profit for each bet.
     """
-    profit = data["Wager"] * (data["Odds"] - 1)
-    profit[data["Result"].isin(["L", "Loss", "Lose"])] = -data["Wager"]
-    profit[data["Result"] == "Draw"] = 0
+    profit = bets_df["Wager"] * (bets_df["Odds"] - 1)
+    loss_condition = bets_df["Result"].isin(["L", "Loss", "Lose"])
+    profit.loc[loss_condition] = -bets_df["Wager"]
+    profit.loc[bets_df["Result"] == "Draw"] = 0
     return profit
 
 
+@st.cache_data(ttl=60 * 5)  # Cache the data for 5 minutes
 def load_bets_from_google_sheet(credentials_file, sheet_url):
     """
     Load bets data from Google Sheets.
 
     Args:
-        sheet_url (str): The URL of the Google Sheets document.
         credentials_file (str): The path to the JSON credentials file.
+        sheet_url (str): The URL of the Google Sheets document.
 
     Returns:
         pd.DataFrame: DataFrame containing the bets data.
     """
-    scope = [
-        "https://spreadsheets.google.com/feeds",
-        "https://www.googleapis.com/auth/drive",
-    ]
-    creds = ServiceAccountCredentials.from_json_keyfile_name(credentials_file, scope)
-    client = gspread.authorize(creds)
+    try:
+        scope = [
+            "https://spreadsheets.google.com/feeds",
+            "https://www.googleapis.com/auth/drive",
+        ]
+        creds = ServiceAccountCredentials.from_json_keyfile_name(
+            credentials_file, scope
+        )
+        client = gspread.authorize(creds)
 
-    # Open the Google Sheet by URL
-    sheet = client.open_by_url(sheet_url).sheet1  # Assumes data is in the first sheet
+        # Open the Google Sheet by URL
+        sheet = client.open_by_url(
+            sheet_url
+        ).sheet1  # Assumes data is in the first sheet
 
-    # Extract data into a DataFrame
-    data = sheet.get_all_records()
-    return pd.DataFrame(data)
+        # Extract data into a DataFrame
+        bets_data = sheet.get_all_records()
+        return pd.DataFrame(bets_data).replace("", pd.NA)
+
+    except FileNotFoundError:
+        st.error("The Google credentials file was not found. Please check the path.")
+    except gspread.exceptions.SpreadsheetNotFound:
+        st.error("The Google Sheet was not found. Please check the URL.")
+    except gspread.exceptions.APIError as e:
+        st.error(f"API Error: {e}")
+    except Exception as e:
+        st.error(f"An unexpected error occurred: {e}")
+
+    return pd.DataFrame()
 
 
-def process_bets_data(data):
+def process_bets_data(bets_df, pending=False):
     """
     Process the loaded bets data by computing additional columns.
 
     Args:
-        data (pd.DataFrame): The DataFrame containing the loaded bet data.
+        bets_df (pd.DataFrame): The DataFrame containing the loaded bet data.
+        pending (bool): If True, filter to only pending bets.
 
     Returns:
         pd.DataFrame: The processed DataFrame.
     """
-    if data.empty:
-        return data
+    if bets_df.empty:
+        return bets_df
 
-    data = data.dropna()
-    data["Date"] = pd.to_datetime(data["Date"])
-    data["To_Win"] = data["Wager"] * (data["Odds"] - 1)
-    data["Profit"] = compute_profit(data)
-    data["ROI"] = (data["Profit"] / data["Wager"] * 100).round(2).astype(str) + "%"
-    return data
+    bets_df = (
+        bets_df[bets_df["Result"].isna()].copy() if pending else bets_df.dropna().copy()
+    )
+    bets_df["Date"] = pd.to_datetime(bets_df["Date"], errors="coerce")
+    bets_df["To_Win"] = bets_df["Wager"] * (bets_df["Odds"] - 1)
+    bets_df["Profit"] = compute_profit(bets_df)
+    bets_df["ROI"] = (bets_df["Profit"] / bets_df["Wager"] * 100).round(2).astype(
+        str
+    ) + "%"
+
+    # Ensure 'Premium' column is the last column in the DataFrame
+    cols = [col for col in bets_df.columns if col != "Premium"] + ["Premium"]
+    bets_df = bets_df.loc[:, cols]
+
+    return bets_df
 
 
-def load_bets():
+def load_bets(pending=False):
     """
     Load and process the bets ledger data from Google Sheets.
+
+    Args:
+        pending (bool): If True, only pending bets will be returned.
 
     Returns:
         pd.DataFrame: The processed bets ledger DataFrame.
     """
-    try:
-        data = load_bets_from_google_sheet(CREDENTIALS_FILE, SHEET_URL)
-        return process_bets_data(data)
-    except FileNotFoundError:
-        st.error("The Google credentials file was not found. Please check the path.")
-        return pd.DataFrame()
-    except gspread.exceptions.SpreadsheetNotFound:
-        st.error("The Google Sheet was not found. Please check the URL.")
-        return pd.DataFrame()
+    bets_df = load_bets_from_google_sheet(CREDENTIALS_FILE, SHEET_URL)
+    return process_bets_data(bets_df, pending)
 
 
 def get_latest_date(filepath):

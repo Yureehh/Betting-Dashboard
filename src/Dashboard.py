@@ -101,7 +101,7 @@ def render_profit_timeline(data):
     )
 
     fig.update_layout(
-        xaxis_title=x_axis,
+        xaxis_title=None,
         yaxis_title=y_axis,
         xaxis={
             "tickformat": "%Y-%m",
