@@ -25,8 +25,8 @@ Date,Team,League,Game,Type,Sportbook,Bet,Result,Odds,Wager
 2024-08-08,UOL Sexy Edition,EUM ME,LOL,Moneyline,ThunderPick,Match Winner,W,1.55,1
 2024-08-08,Team BDS Academy,EUM ME,LOL,Moneyline,ThunderPick,Match Winner,W,1.40,1
 2024-08-08,SK Gaming Prime,EUM ME,LOL,Moneyline,ThunderPick,Match Winner,W,1.55,1
-2024-08-08,_,EUM ME,LOL,Over/Under Maps,ThunderPick,Over 2.5 Maps,W,2.00,1
-2024-08-08,_,EUM ME,LOL,Over/Under Maps,ThunderPick,Over 2.5 Maps,W,1.85,1
+2024-08-08,Dsyre/DarkPassage,EUM ME,LOL,Over/Under Maps,ThunderPick,Over 2.5 Maps,W,2.00,1
+2024-08-08,Vitality/Geekay Esports,EUM ME,LOL,Over/Under Maps,ThunderPick,Over 2.5 Maps,W,1.85,1
 2024-08-09,Ramboot Club,EUM ME,LOL,Moneyline,ThunderPick,Match Winner,W,1.85,2
 2024-08-09,Macko Esports,EUM ME,LOL,Moneyline,ThunderPick,Match Winner,,1.52,1
 2024-08-09,mCon Esports,EUM ME,LOL,Moneyline,ThunderPick,Match Winner,W,3.10,0.75
@@ -44,4 +44,22 @@ Date,Team,League,Game,Type,Sportbook,Bet,Result,Odds,Wager
 2024-08-11,FunPlus Phoenix,LPL Playoffs,LOL,Moneyline,ThunderPick,Game5 Winner,W,1.65,1
 2024-08-11,Mad Lions KOI,LEC SF,LOL,Moneyline,ThunderPick,Game3 Winner,L,3.80,1
 2024-08-11,Mad Lions KOI,LEC SF,LOL,Moneyline,ThunderPick,Game5 Winner,W,3.80,1
-2024-08-11,_,LCS,LOL,Over/Under Maps,ThunderPick,Over 2.5 Maps,L,1.85,1
+2024-08-11,Cloud9/FlyQuest,LCS,LOL,Over/Under Maps,ThunderPick,Over 2.5 Maps,L,1.85,1
+2024-08-12,JD Gaming,LPL,LOL,Match Handicap,ThunderPick,-1.5 maps,L,1.55,1
+2024-08-12,JD Gaming,LPL,LOL,Moneyline,ThunderPick,Map3 Winner,L,1.58,1
+2024-08-12,JD Gaming,LPL,LOL,Moneyline,ThunderPick,Map5 Winner,L,1.55,1
+2024-08-12,BK ROG Esports,EUM ME,LOL,Moneyline,ThunderPick,Match Winner,W,1.52,2
+2024-08-12,Dark Passage,EUM ME,LOL,Moneyline,ThunderPick,Match Winner,W,1.72,2
+2024-08-12,Los Heretics,EUM ME,LOL,Moneyline,ThunderPick,Map1 Winner,W,1.50,4
+2024-08-12,Los Heretics,EUM ME,LOL,Moneyline,ThunderPick,Map2 Winner,W,1.50,1.75
+2024-08-13,Hanwha Life Esports Challengers,LCK CL,LOL,Moneyline,ThunderPick,Map1 Winner,W,1.48,1.5
+2024-08-13,DRX Challengers,LCK CL,LOL,Moneyline,ThunderPick,Map2 Winner,W,2.60,0.5
+2024-08-13,Anyone's Legend,LPL Playoffs,LOL,Moneyline,ThunderPick,Map1 Winner,W,1.5,1.5
+2024-08-13,Anyone's Legend,LPL Playoffs,LOL,Moneyline,ThunderPick,Map2 Winner,W,1.5,2
+2024-08-13,Anyone's Legend,LPL Playoffs,LOL,Moneyline,ThunderPick,Map4 Winner,W,1.5,1
+2024-08-13,BK ROG Esports,EUM ME,LOL,Moneyline,ThunderPick,Match Winner,W,1.55,1
+2024-08-13,NNO Prime,EUM ME,LOL,Moneyline,ThunderPick,Match Winner,L,1.55,1
+2024-08-13,BK ROG Esports,EUM ME,LOL,Moneyline,ThunderPick,Map3 Winner,W,1.72,1
+2024-08-14,DRX,LCK,LOL,Match Handicap,ThunderPick,+1.5 Maps,L,2.10,0.5
+2024-08-14,T1,LCK,LOL,Match Handicap,ThunderPick,-1.5 Maps,L,1.82,1
+2024-08-14,T1,LCK,LOL,Moneyline,ThunderPick,Match Winner,W,1.92,1
