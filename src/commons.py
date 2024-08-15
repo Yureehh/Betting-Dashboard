@@ -8,7 +8,6 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 VERTICAL_SPACE = "<br><br>"
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1rrBtklorbir3zrsHkzTAFlmahxu_S9Gnyrg1RQhRtHw/edit?usp=drive_link"
-CREDENTIALS_FILE = "lol-oracle-google-credentials.json"
 
 
 def setup(page_title, page_icon=""):
@@ -63,12 +62,11 @@ def compute_profit(bets_df):
 
 
 @st.cache_data(ttl=60 * 5)  # Cache the data for 5 minutes
-def load_bets_from_google_sheet(credentials_file, sheet_url):
+def load_bets_from_google_sheet(sheet_url):
     """
     Load bets data from Google Sheets.
 
     Args:
-        credentials_file (str): The path to the JSON credentials file.
         sheet_url (str): The URL of the Google Sheets document.
 
     Returns:
@@ -79,9 +77,9 @@ def load_bets_from_google_sheet(credentials_file, sheet_url):
             "https://spreadsheets.google.com/feeds",
             "https://www.googleapis.com/auth/drive",
         ]
-        creds = ServiceAccountCredentials.from_json_keyfile_name(
-            credentials_file, scope
-        )
+        # Load credentials from Streamlit secrets
+        creds_dict = st.secrets["gspread_credentials"]
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
 
         # Open the Google Sheet by URL
@@ -93,8 +91,6 @@ def load_bets_from_google_sheet(credentials_file, sheet_url):
         bets_data = sheet.get_all_records()
         return pd.DataFrame(bets_data).replace("", pd.NA)
 
-    except FileNotFoundError:
-        st.error("The Google credentials file was not found. Please check the path.")
     except gspread.exceptions.SpreadsheetNotFound:
         st.error("The Google Sheet was not found. Please check the URL.")
     except gspread.exceptions.APIError as e:
@@ -146,7 +142,7 @@ def load_bets(pending=False):
     Returns:
         pd.DataFrame: The processed bets ledger DataFrame.
     """
-    bets_df = load_bets_from_google_sheet(CREDENTIALS_FILE, SHEET_URL)
+    bets_df = load_bets_from_google_sheet(SHEET_URL)
     return process_bets_data(bets_df, pending)
 
 
