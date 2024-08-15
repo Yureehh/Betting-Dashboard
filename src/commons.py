@@ -7,7 +7,7 @@ import streamlit as st
 from oauth2client.service_account import ServiceAccountCredentials
 
 VERTICAL_SPACE = "<br><br>"
-SHEET_URL = "https://docs.google.com/spreadsheets/d/1rrBtklorbir3zrsHkzTAFlmahxu_S9Gnyrg1RQhRtHw"
+SHEET_URL = "https://docs.google.com/spreadsheets/d/1rrBtklorbir3zrsHkzTAFlmahxu_S9Gnyrg1RQhRtHw/edit?usp=drive_link"
 CREDENTIALS_FILE = "lol-oracle-google-credentials.json"
 
 
