@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from typing import Optional
 
 import gspread
 import pandas as pd
@@ -10,13 +11,13 @@ VERTICAL_SPACE = "<br><br>"
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1rrBtklorbir3zrsHkzTAFlmahxu_S9Gnyrg1RQhRtHw/edit?usp=drive_link"
 
 
-def setup(page_title, page_icon=""):
+def setup(page_title: str, page_icon: Optional[str] = ""):
     """
     Setup the Streamlit page with the given title and icon.
 
     Args:
         page_title (str): The title of the Streamlit page.
-        page_icon (str): The icon for the Streamlit page.
+        page_icon (Optional[str]): The icon for the Streamlit page.
     """
     st.set_page_config(
         page_title=page_title,
@@ -37,14 +38,15 @@ def apply_custom_styles():
     """
     Apply custom CSS styles to the Streamlit page by loading from an external CSS file.
     """
-    try:
-        with open("styles/styles.css") as f:
+    css_file_path = "styles/styles.css"
+    if os.path.exists(css_file_path):
+        with open(css_file_path) as f:
             st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    except FileNotFoundError:
-        st.warning("Custom styles not applied. 'styles.css' file not found.")
+    else:
+        st.warning(f"Custom styles not applied. '{css_file_path}' file not found.")
 
 
-def compute_profit(bets_df):
+def compute_profit(bets_df: pd.DataFrame) -> pd.Series:
     """
     Compute the profit for each bet using vectorized operations.
 
@@ -62,7 +64,7 @@ def compute_profit(bets_df):
 
 
 @st.cache_data(ttl=60 * 5)  # Cache the data for 5 minutes
-def load_bets_from_google_sheet(sheet_url):
+def load_bets_from_google_sheet(sheet_url: str) -> pd.DataFrame:
     """
     Load bets data from Google Sheets.
 
@@ -77,8 +79,14 @@ def load_bets_from_google_sheet(sheet_url):
             "https://spreadsheets.google.com/feeds",
             "https://www.googleapis.com/auth/drive",
         ]
+
         # Load credentials from Streamlit secrets
-        creds_dict = st.secrets["gspread_credentials"]
+        creds_dict = dict(st.secrets["gspread_credentials"])
+
+        # Fix private key formatting issue (if needed)
+        creds_dict["private_key"] += "\n-----END PRIVATE KEY-----\n"
+
+        # Load credentials directly from the dictionary
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
 
@@ -101,7 +109,7 @@ def load_bets_from_google_sheet(sheet_url):
     return pd.DataFrame()
 
 
-def process_bets_data(bets_df, pending=False):
+def process_bets_data(bets_df: pd.DataFrame, pending: bool = False) -> pd.DataFrame:
     """
     Process the loaded bets data by computing additional columns.
 
@@ -125,14 +133,15 @@ def process_bets_data(bets_df, pending=False):
         str
     ) + "%"
 
-    # Ensure 'Premium' column is the last column in the DataFrame
-    cols = [col for col in bets_df.columns if col != "Premium"] + ["Premium"]
-    bets_df = bets_df.loc[:, cols]
+    # Ensure 'Premium' column is the last column in the DataFrame if it exists
+    if "Premium" in bets_df.columns:
+        cols = [col for col in bets_df.columns if col != "Premium"] + ["Premium"]
+        bets_df = bets_df.loc[:, cols]
 
     return bets_df
 
 
-def load_bets(pending=False):
+def load_bets(pending: bool = False) -> pd.DataFrame:
     """
     Load and process the bets ledger data from Google Sheets.
 
@@ -146,7 +155,7 @@ def load_bets(pending=False):
     return process_bets_data(bets_df, pending)
 
 
-def get_latest_date(filepath):
+def get_latest_date(filepath: str) -> str:
     """
     Get the latest modification date of a file.
 
@@ -156,5 +165,9 @@ def get_latest_date(filepath):
     Returns:
         str: The last modification date formatted as 'YYYY-MM-DD'.
     """
-    modified_time = os.path.getmtime(filepath)
-    return datetime.fromtimestamp(modified_time).strftime("%Y-%m-%d")
+    try:
+        modified_time = os.path.getmtime(filepath)
+        return datetime.fromtimestamp(modified_time).strftime("%Y-%m-%d")
+    except FileNotFoundError:
+        st.error(f"File not found: {filepath}")
+        return ""  # Return empty string if file is not found

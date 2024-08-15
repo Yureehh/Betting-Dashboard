@@ -123,7 +123,7 @@ def display_league_accuracies(league_accuracies):
 
 
 if __name__ == "__main__":
-    setup(f"Model Validation - Updated {get_latest_date(MODEL_METRICS_PATH)}")
+    setup(f"Model Validation - {get_latest_date(MODEL_METRICS_PATH)}")
 
     data = load_bets()
 

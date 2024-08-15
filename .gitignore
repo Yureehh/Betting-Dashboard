@@ -96,3 +96,6 @@ devcontainer/
 
 # GSHEET CREDENTIALS
 lol-oracle-google-credentials.json
+
+#STREAMLIT SECRETS
+secrets.toml
