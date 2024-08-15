@@ -1,3 +1,11 @@
+## 1.1.1 (2024-08-15)
+
+### Fix
+
+- **model_validation**: Refined model validation
+- **commons**: got rid of credentials file
+- **commons**: fixed gsheet url
+
 ## 1.1.0 (2024-08-15)
 
 ### Feat
