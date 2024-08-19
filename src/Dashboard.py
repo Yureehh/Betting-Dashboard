@@ -189,7 +189,7 @@ def render_roi_by_wager_type(roi_data):
 
 
 if __name__ == "__main__":
-    setup("Yureeh Betting Dashboard")
+    setup("Lol-Oracle Betting Dashboard")
 
     data = load_bets()
 

@@ -27,7 +27,7 @@ def setup(page_title: str, page_icon: Optional[str] = ""):
         layout="wide",
         initial_sidebar_state="expanded",
         menu_items={
-            "About": "Public ledger of my betting activity.\nTwitter: @Yureehwastaken"
+            "About": "Public ledger of my betting activity.\nTwitter: @LolOracleBets"
         },
         page_icon=page_icon,
     )
