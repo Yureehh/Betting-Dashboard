@@ -37,19 +37,21 @@ def render_sidebar(data, pending=False):
     if end_date:
         data = data[data["Date"] <= pd.Timestamp(end_date)]
 
-    if leagues := st.sidebar.multiselect("**League**", data["League"].unique()):
+    if bet_types := st.sidebar.multiselect(
+        "**Bet Type**", sorted(data["Type"].unique())
+    ):
+        data = data[data["Type"].isin(bet_types)]
+
+    if leagues := st.sidebar.multiselect("**League**", sorted(data["League"].unique())):
         data = data[data["League"].isin(leagues)]
 
-    if teams := st.sidebar.multiselect("**Team**", data["Team"].unique()):
+    if teams := st.sidebar.multiselect("**Team**", sorted(data["Team"].unique())):
         data = data[data["Team"].isin(teams)]
-
-    if bet_types := st.sidebar.multiselect("**Bet Type**", data["Type"].unique()):
-        data = data[data["Type"].isin(bet_types)]
 
     # Bet result filter (only if not pending)
     if not pending:
         if bet_results := st.sidebar.multiselect(
-            "**Bet Result**", data["Result"].unique()
+            "**Bet Result**", sorted(data["Result"].unique())
         ):
             data = data[data["Result"].isin(bet_results)]
 

@@ -55,7 +55,7 @@ showErrorDetails = true
 #                 Streamlit Community Cloud) or through st.set_page_config.
 #                 If there are no options left, hide the menu.
 # Default: "auto"
-toolbarMode = "auto"
+toolbarMode = "developer"
 
 # Controls whether the default sidebar page navigation in a multipage app is
 # displayed.

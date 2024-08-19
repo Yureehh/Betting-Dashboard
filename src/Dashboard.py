@@ -25,7 +25,7 @@ def calculate_metrics(data):
 
     return {
         "total_bets": total_bets,
-        "total_wager": total_wager,
+        "total_wager": round(total_wager, 2),
         "total_winrate": round(total_winrate, 2),
         "total_profit": round(total_profit, 2),
         "total_roi": round(total_roi, 2),
@@ -140,7 +140,7 @@ def calculate_roi_by_wager_type(data):
 
 def create_roi_bar_chart(roi_data):
     """
-    Create a horizontal bar chart for ROI by wager type with bet counts.
+    Create a horizontal bar chart for ROI by wager type.
 
     Args:
         roi_data (pd.DataFrame): DataFrame containing ROI and bet count per wager type.
@@ -160,10 +160,16 @@ def create_roi_bar_chart(roi_data):
         labels={"Type": "Wager Type", "ROI": "ROI %"},
         color="color",
         color_discrete_map={"#00CC96": "#00CC96", "#FF6692": "#FF6692"},
-        text="Bets Count",  # Display the number of bets within the bars
+        text="ROI",  # Display the ROI percentage on the bars
+        hover_data={
+            "Type": False,  # Disable wager type in hover
+            "color": False,  # Disable color in hover
+            "ROI": False,  # Format ROI as percentage
+            "Bets Count": True,  # Show bet counts
+        },
     )
 
-    fig.update_traces(texttemplate="%{text}", textposition="outside")
+    fig.update_traces(texttemplate="%{x:.2f}%", textposition="outside")
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     return fig
