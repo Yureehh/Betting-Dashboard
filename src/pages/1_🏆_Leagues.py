@@ -1,7 +1,7 @@
 import plotly.express as px
 import streamlit as st
 
-from commons import VERTICAL_SPACE, load_bets, setup
+from commons import BLUE_COLOR, GREEN_COLOR, RED_COLOR, VERTICAL_SPACE, load_bets, setup
 from sidebar import render_sidebar
 
 
@@ -12,7 +12,7 @@ def plot_bet_number_percentage(data):
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    st.write("### Bet Number Percentage by League")
+    st.write("### Bets Percentage by League")
     bet_counts = data["League"].value_counts().reset_index()
     bet_counts.columns = ["League", "Bets Count"]
     bet_counts = bet_counts.sort_values("League")  # Sort alphabetically
@@ -24,7 +24,6 @@ def plot_bet_number_percentage(data):
     fig.update_layout(
         yaxis=dict(autorange="reversed"),
         showlegend=True,
-        legend_title_text="Bets Count",
     )
     st.plotly_chart(fig, use_container_width=True)
     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
@@ -51,9 +50,9 @@ def plot_profit_by_league(data):
         orientation="h",
         labels={"League": "", "Profit": "Profit (Units)"},
         color=profit_by_league["Profit"].apply(
-            lambda x: "#00CC96" if x > 0 else "#FF6692"
+            lambda x: GREEN_COLOR if x > 0 else RED_COLOR
         ),
-        color_discrete_map={"#00CC96": "#00CC96", "#FF6692": "#FF6692"},
+        color_discrete_map={GREEN_COLOR: GREEN_COLOR, RED_COLOR: RED_COLOR},
         text="Profit",
         hover_data={"Profit": False, "Bets Count": True, "League": False},
     )
@@ -85,7 +84,7 @@ def plot_winrate_by_league(data):
         y="League",
         orientation="h",
         labels={"League": "", "Winrate": "Winrate %"},
-        color_discrete_sequence=["#0057B8"],  # Darker blue for winrate
+        color_discrete_sequence=[BLUE_COLOR],  # Darker blue for winrate
         text="Winrate",
         hover_data={"Winrate": False, "Bets Count": True, "League": False},
     )
@@ -120,8 +119,8 @@ def plot_roi_by_league(data):
         y="League",
         orientation="h",
         labels={"League": "", "ROI": "ROI %"},
-        color=roi_by_league["ROI"].apply(lambda x: "#00CC96" if x > 0 else "#FF6692"),
-        color_discrete_map={"#00CC96": "#00CC96", "#FF6692": "#FF6692"},
+        color=roi_by_league["ROI"].apply(lambda x: GREEN_COLOR if x > 0 else RED_COLOR),
+        color_discrete_map={GREEN_COLOR: GREEN_COLOR, RED_COLOR: RED_COLOR},
         text="ROI",
         hover_data={
             "League": False,
