@@ -2,7 +2,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from commons import VERTICAL_SPACE, load_bets, setup
+from commons import GREEN_COLOR, RED_COLOR, VERTICAL_SPACE, load_bets, setup
 from sidebar import render_sidebar
 
 
@@ -25,7 +25,7 @@ def calculate_metrics(data):
 
     return {
         "total_bets": total_bets,
-        "total_wager": total_wager,
+        "total_wager": round(total_wager, 2),
         "total_winrate": round(total_winrate, 2),
         "total_profit": round(total_profit, 2),
         "total_roi": round(total_roi, 2),
@@ -140,7 +140,7 @@ def calculate_roi_by_wager_type(data):
 
 def create_roi_bar_chart(roi_data):
     """
-    Create a horizontal bar chart for ROI by wager type with bet counts.
+    Create a horizontal bar chart for ROI by wager type.
 
     Args:
         roi_data (pd.DataFrame): DataFrame containing ROI and bet count per wager type.
@@ -149,7 +149,7 @@ def create_roi_bar_chart(roi_data):
         plotly.graph_objects.Figure: The bar chart figure.
     """
     roi_data["color"] = roi_data["ROI"].apply(
-        lambda x: "#00CC96" if x > 0 else "#FF6692"
+        lambda x: GREEN_COLOR if x > 0 else RED_COLOR
     )
 
     fig = px.bar(
@@ -159,11 +159,17 @@ def create_roi_bar_chart(roi_data):
         orientation="h",
         labels={"Type": "Wager Type", "ROI": "ROI %"},
         color="color",
-        color_discrete_map={"#00CC96": "#00CC96", "#FF6692": "#FF6692"},
-        text="Bets Count",  # Display the number of bets within the bars
+        color_discrete_map={GREEN_COLOR: GREEN_COLOR, RED_COLOR: RED_COLOR},
+        text="ROI",  # Display the ROI percentage on the bars
+        hover_data={
+            "Type": False,  # Disable wager type in hover
+            "color": False,  # Disable color in hover
+            "ROI": False,  # Format ROI as percentage
+            "Bets Count": True,  # Show bet counts
+        },
     )
 
-    fig.update_traces(texttemplate="%{text}", textposition="outside")
+    fig.update_traces(texttemplate="%{x:.2f}%", textposition="outside")
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
     fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     return fig
@@ -183,7 +189,7 @@ def render_roi_by_wager_type(roi_data):
 
 
 if __name__ == "__main__":
-    setup("Yureeh Betting Dashboard")
+    setup("Lol-Oracle Betting Dashboard")
 
     data = load_bets()
 

@@ -9,6 +9,9 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 VERTICAL_SPACE = "<br><br>"
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1rrBtklorbir3zrsHkzTAFlmahxu_S9Gnyrg1RQhRtHw/edit?usp=drive_link"
+GREEN_COLOR = "#00CC96"
+RED_COLOR = "#FF6692"
+BLUE_COLOR = "#0057B8"
 
 
 def setup(page_title: str, page_icon: Optional[str] = ""):
@@ -24,7 +27,7 @@ def setup(page_title: str, page_icon: Optional[str] = ""):
         layout="wide",
         initial_sidebar_state="expanded",
         menu_items={
-            "About": "Public ledger of my betting activity.\nTwitter: @Yureehwastaken"
+            "About": "Public ledger of my betting activity.\nTwitter: @LolOracleBets"
         },
         page_icon=page_icon,
     )

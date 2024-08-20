@@ -3,7 +3,7 @@
 
 ## Overview
 
-**Betting-Dashboard** is a Streamlit application designed to visualize and manage a public ledger of bets. The dashboard offers insights into your betting history, helping you analyze performance and trends. This project is maintained by **Yureeh**.
+**Betting-Dashboard** is a Streamlit application designed to visualize and manage a public ledger of bets. The dashboard offers insights into your betting history, helping you analyze performance and trends.
 
 ## Features
 
@@ -98,4 +98,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-If you have any questions or feedback, feel free to reach out to me on X [@Yureehh](https://twitter.com/Yureehh).
+If you have any questions or feedback, feel free to reach out on X [@LolOracle](https://x.com/LolOracleBets). This project is maintained by [Yureeh](https://x.com/Yureehwastaken)

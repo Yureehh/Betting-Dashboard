@@ -26,7 +26,7 @@ def main():
     """
     Main function to set up the page and render the pending bets.
     """
-    setup("Yureeh Pending Bets")
+    setup("Lol-Oracle Pending Bets")
 
     all_bets_df = load_bets(pending=True)
 

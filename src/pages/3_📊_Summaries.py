@@ -56,7 +56,7 @@ def render_bet_count_table(data):
         index="Type",
         columns="League",
         aggfunc="count",
-        title="Bets Count",
+        title="Bets Count (#)",
     )
 
 
@@ -73,7 +73,7 @@ def render_total_wager_table(data):
         index="Type",
         columns="League",
         aggfunc="sum",
-        title="Total Wager",
+        title="Total Wager (Units)",
     )
 
 
@@ -90,7 +90,7 @@ def render_average_odds_table(data):
         index="Type",
         columns="League",
         aggfunc="mean",
-        title="Average Odds",
+        title="Average Bet Odds",
     )
 
 
@@ -108,7 +108,7 @@ def render_win_rate_table(data):
         index="Type",
         columns="League",
         aggfunc="mean",
-        title="Win Rate",
+        title="Win Rate (%)",
         round_digits=2,
     )
 
