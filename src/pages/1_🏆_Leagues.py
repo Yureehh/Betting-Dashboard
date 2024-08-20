@@ -6,11 +6,14 @@ from commons import (
     BLUE_COLOR,
     DOUBLE_VERTICAL_SPACE,
     GREEN_COLOR,
+    HORIZONTAL_LINE,
     RED_COLOR,
     load_bets,
     setup,
 )
 from sidebar import render_sidebar
+
+PAGE_NAME = "Stats by League"
 
 
 def plot_bet_number_percentage(data: pd.DataFrame) -> None:
@@ -168,7 +171,7 @@ def plot_roi_by_league(data: pd.DataFrame) -> None:
 
 
 if __name__ == "__main__":
-    setup("Stats by League")
+    setup(PAGE_NAME)
 
     data = load_bets()
 
@@ -178,6 +181,6 @@ if __name__ == "__main__":
         plot_profit_by_league(filtered_data)
         plot_winrate_by_league(filtered_data)
         plot_roi_by_league(filtered_data)
-        st.markdown("<hr>", unsafe_allow_html=True)
+        st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
     else:
         st.error("Failed to load data. Please check the data source.")

@@ -18,6 +18,8 @@ REFERRAL_CODE = "ORACLE_BETS"
 REFERRAL_COPY = "🚀 **Register now to claim your deposit bonus!**"
 REFERRAL_BUTTON = f"**Referral Code:** '_{REFERRAL_CODE}_'"
 REFERRAL_BUTTON_TOOLTIP = "Copied Referral to Clipboard"
+ABOUT_TEXT = "Public ledger of LoL Oracle betting activity.\nTwitter: @Oracle_Betss"
+PREMIUM_STRING = "Premium"
 
 
 def setup(page_title: str, page_icon: Optional[str] = None) -> None:
@@ -29,11 +31,11 @@ def setup(page_title: str, page_icon: Optional[str] = None) -> None:
         page_icon (Optional[str]): The icon for the Streamlit page.
     """
     st.set_page_config(
-        page_title=page_title,
+        page_title="LoL Oracle",
         layout="wide",
         initial_sidebar_state="expanded",
         menu_items={
-            "About": "Public ledger of LoL Oracle betting activity.\nTwitter: @Oracle_Betss"
+            "About": ABOUT_TEXT,
         },
         page_icon=page_icon,
     )
@@ -149,9 +151,9 @@ def process_bets_data(bets_df: pd.DataFrame, pending: bool = False) -> pd.DataFr
     ) + "%"
 
     # Ensure 'Premium' column is the last column in the DataFrame if it exists
-    if "Premium" in bets_df.columns:
+    if PREMIUM_STRING in bets_df.columns:
         bets_df = bets_df[
-            [col for col in bets_df.columns if col != "Premium"] + ["Premium"]
+            [col for col in bets_df.columns if col != PREMIUM_STRING] + [PREMIUM_STRING]
         ]
 
     return bets_df

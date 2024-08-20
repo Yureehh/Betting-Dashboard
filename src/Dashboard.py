@@ -14,7 +14,8 @@ from commons import (
 from sidebar import render_sidebar
 
 WIN_SYMBOL = "W"
-PAGE_NAME = "LoL Oracle Betting Dashboard"
+PAGE_NAME = "Betting Dashboard"
+ERROR_MESSAGE = "Failed to load data. Please check the data source."
 
 
 def calculate_metrics(data: pd.DataFrame) -> dict:
@@ -226,4 +227,4 @@ if __name__ == "__main__":
 
         st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
     else:
-        st.error("Failed to load data. Please check the data source.")
+        st.error(ERROR_MESSAGE)

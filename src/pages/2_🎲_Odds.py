@@ -6,6 +6,7 @@ from commons import (
     BLUE_COLOR,
     DOUBLE_VERTICAL_SPACE,
     GREEN_COLOR,
+    HORIZONTAL_LINE,
     RED_COLOR,
     load_bets,
     setup,
@@ -13,6 +14,7 @@ from commons import (
 from sidebar import render_sidebar
 
 ODDS_GROUP_STR = "Odds Group"
+PAGE_NAME = "Stats by Odds"
 
 
 def group_odds(odds: float) -> str:
@@ -193,7 +195,7 @@ def plot_roi_by_odds(data: pd.DataFrame) -> None:
 
 
 if __name__ == "__main__":
-    setup("Stats by Odds")
+    setup(PAGE_NAME)
 
     data = load_bets()
 
@@ -206,6 +208,6 @@ if __name__ == "__main__":
         plot_winrate_by_odds(filtered_data)
         plot_roi_by_odds(filtered_data)
 
-        st.markdown("<hr>", unsafe_allow_html=True)
+        st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
     else:
         st.error("Failed to load data. Please check the data source.")

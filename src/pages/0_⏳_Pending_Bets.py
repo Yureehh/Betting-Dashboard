@@ -1,8 +1,11 @@
 import pandas as pd
 import streamlit as st
 
-from commons import DOUBLE_VERTICAL_SPACE, load_bets, setup
+from commons import DOUBLE_VERTICAL_SPACE, HORIZONTAL_LINE, load_bets, setup
 from sidebar import render_sidebar
+
+PAGE_NAME = "Pending Bets"
+MISSING_DATA_MESSAGE = "No data available. Please check the data source."
 
 
 def render_pending_bets_df(pending_bets_df: pd.DataFrame) -> None:
@@ -26,17 +29,17 @@ def main() -> None:
     """
     Main function to set up the page and render the pending bets.
     """
-    setup("LoL Oracle Pending Bets")
+    setup(PAGE_NAME)
 
     all_bets_df = load_bets(pending=True)
 
     if all_bets_df.empty:
-        st.error("No pending bets listed at the moment.")
+        st.error(MISSING_DATA_MESSAGE)
     else:
         filtered_bets_df = render_sidebar(all_bets_df, pending=True)
         render_pending_bets_df(filtered_bets_df)
 
-    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,8 @@
 import pandas as pd
 import streamlit as st
 
+from commons import SINGLE_VERTICAL_SPACE
+
 START_DATE = pd.Timestamp("2024-08-01")
 
 
@@ -20,7 +22,7 @@ def render_sidebar(data: pd.DataFrame, pending: bool = False) -> pd.DataFrame:
         return data
 
     # Sidebar for filters
-    st.sidebar.markdown("<br>", unsafe_allow_html=True)
+    st.sidebar.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
     st.sidebar.title("**Filters**")
 
     # Date filters

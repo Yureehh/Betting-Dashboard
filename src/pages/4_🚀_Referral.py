@@ -1,6 +1,6 @@
 import streamlit as st
 
-from commons import setup
+from commons import HORIZONTAL_LINE, setup
 
 
 def render_referral_page():
@@ -23,7 +23,7 @@ def render_referral_page():
     st.markdown("### 🔥 Spread the Word:")
     st.write("Invite others and get **VIP access** to exclusive bets!")
 
-    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
 
 
 def main():
