@@ -26,7 +26,8 @@ repos:
           - pep8-naming
           - flake8-docstrings
         verbose: true
-        args: ['--ignore=E501,W503,I101,D,N803,N806,B905,B907,B950', '--exclude=tests']
+        # Ignore import order related warnings from flake8
+        args: ['--ignore=E501,W503,I100,I101,D,N803,N806,B905,B907,B950', '--exclude=tests']
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
