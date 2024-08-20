@@ -8,7 +8,7 @@ import plotly.express as px
 import streamlit as st
 from PIL import Image
 
-from commons import VERTICAL_SPACE, get_latest_date, load_bets, setup
+from commons import DOUBLE_VERTICAL_SPACE, get_latest_date, load_bets, setup
 from paths import (
     ACCURACY_OVER_SAMPLES_PATH,
     HISTORICAL_ACCURACY_PATH,
@@ -58,7 +58,7 @@ def display_metrics(metrics):
     metric_columns = st.columns(4)
     for i, (key, value) in enumerate(metrics.items()):
         metric_columns[i].metric(key.capitalize(), f"{value:.2%}")
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def plot_image(title, image_path, caption):
@@ -73,7 +73,7 @@ def plot_image(title, image_path, caption):
     st.write(f"### {title}")
     image = load_image(image_path)
     st.image(image, caption=caption)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 def display_league_accuracies(league_accuracies):
@@ -119,7 +119,7 @@ def display_league_accuracies(league_accuracies):
 
     # Display the chart in Streamlit
     st.plotly_chart(fig, use_container_width=True)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
@@ -167,7 +167,7 @@ if __name__ == "__main__":
 #     LEAGUE_ACCURACIES_PATH,
 #     MODEL_METRICS_PATH,
 # )
-# from commons import VERTICAL_SPACE, get_latest_date, load_bets, setup
+# from commons import DOUBLE_VERTICAL_SPACE, get_latest_date, load_bets, setup
 # from sidebar import render_sidebar
 # from s3_utils import load_json_from_s3, load_image_from_s3
 
@@ -190,7 +190,7 @@ if __name__ == "__main__":
 #     metric_columns = st.columns(4)
 #     for i, (key, value) in enumerate(metrics.items()):
 #         metric_columns[i].metric(key.capitalize(), f"{value:.2%}")
-#     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+#     st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 # def plot_image(title, image_path=None, caption="", bucket_name=None, s3_key=None):
 #     """
@@ -211,7 +211,7 @@ if __name__ == "__main__":
 #         image = load_image(image_path)
 
 #     st.image(image, caption=caption)
-#     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+#     st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 # def display_league_accuracies(league_accuracies):
 #     """
@@ -252,7 +252,7 @@ if __name__ == "__main__":
 #     )
 
 #     st.plotly_chart(fig, use_container_width=True)
-#     st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+#     st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 # if __name__ == "__main__":
 #     setup(f"Model Validation - Updated {get_latest_date(MODEL_METRICS_PATH)}")

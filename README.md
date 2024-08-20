@@ -70,7 +70,7 @@ poetry run pytest
 
 ## Data Source
 
-The Betting-Dashboard uses a public ledger of bets to generate visualizations and insights. You can check the required format for the data by examining the `bets_ledger.csv` file in the data folder.
+The Betting-Dashboard uses a public ledger of bets to generate visualizations and insights. You can check the required format for the data by examining the [`bets_ledger.csv`](https://docs.google.com/spreadsheets/d/1rrBtklorbir3zrsHkzTAFlmahxu_S9Gnyrg1RQhRtHw/edit?usp=drive_link) file.
 
 ## Versioning
 
@@ -98,4 +98,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-If you have any questions or feedback, feel free to reach out on X [@LolOracle](https://x.com/LolOracleBets). This project is maintained by [Yureeh](https://x.com/Yureehwastaken)
+If you have any questions or feedback, feel free to reach out on X [@OracleBets](https://x.com/Oracle_Betss). This project is maintained by [Yureeh](https://x.com/Yureehwastaken)

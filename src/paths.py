@@ -1,23 +1,22 @@
 """
 Paths Module
 
-This file contains the paths to the data directories and files used in the project.
+This module defines and manages the paths to data directories and files used in the project.
 It ensures that the necessary directories are created and available for data storage and access.
 """
 
-import os
 from pathlib import Path
 
 # Define the base directory path relative to the current working directory
-BASE_DIR = Path(os.getcwd())
+BASE_DIR = Path.cwd()
 
 # Directories for data storage
 DATA_DIR = BASE_DIR / "data"
 MODEL_VALIDATION_DIR = DATA_DIR / "model_validation"
 
 # Ensure that the necessary directories exist
-DATA_DIR.mkdir(parents=True, exist_ok=True)
-MODEL_VALIDATION_DIR.mkdir(parents=True, exist_ok=True)
+for directory in [DATA_DIR, MODEL_VALIDATION_DIR]:
+    directory.mkdir(parents=True, exist_ok=True)
 
 # Paths for model validation outputs
 ACCURACY_OVER_SAMPLES_PATH = (

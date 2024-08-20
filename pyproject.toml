@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "betting-dashboard"
+name = "Betting-Dashboard"
 version = "1.1.1"
-description = "Lol-Oracle's bets public ledger"
-authors = ["yureehh <fabbri.juri@gmail.com>"]
+description = "Oracle-Bets' public ledger on LoL games"
+authors = ["Yureeh <oracle.bets@outlook.com>"]
 license = "MIT"
 readme = "README.md"
 packages = [
@@ -29,6 +29,7 @@ pytest-cov = "^4.1.0"
 numpy = "1.26.4"
 gspread = "^6.1.2"
 oauth2client = "^4.1.3"
+pyperclip = "^1.9.0"
 
 [tool.commitizen]
 name = "cz_conventional_commits"

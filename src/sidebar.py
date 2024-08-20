@@ -4,7 +4,7 @@ import streamlit as st
 START_DATE = pd.Timestamp("2024-08-01")
 
 
-def render_sidebar(data, pending=False):
+def render_sidebar(data: pd.DataFrame, pending: bool = False) -> pd.DataFrame:
     """
     Render the sidebar for filtering the bets ledger.
 

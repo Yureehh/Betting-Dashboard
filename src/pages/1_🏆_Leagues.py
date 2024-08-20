@@ -1,11 +1,19 @@
+import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from commons import BLUE_COLOR, GREEN_COLOR, RED_COLOR, VERTICAL_SPACE, load_bets, setup
+from commons import (
+    BLUE_COLOR,
+    DOUBLE_VERTICAL_SPACE,
+    GREEN_COLOR,
+    RED_COLOR,
+    load_bets,
+    setup,
+)
 from sidebar import render_sidebar
 
 
-def plot_bet_number_percentage(data):
+def plot_bet_number_percentage(data: pd.DataFrame) -> None:
     """
     Plot a pie chart of bet number percentage by league.
 
@@ -22,14 +30,13 @@ def plot_bet_number_percentage(data):
         names="League",
     )
     fig.update_layout(
-        yaxis=dict(autorange="reversed"),
         showlegend=True,
     )
     st.plotly_chart(fig, use_container_width=True)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
-def plot_profit_by_league(data):
+def plot_profit_by_league(data: pd.DataFrame) -> None:
     """
     Plot profit by league.
 
@@ -37,12 +44,20 @@ def plot_profit_by_league(data):
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
     st.write("### Profit by League")
-    profit_by_league = data.groupby("League").agg({"Profit": "sum"}).reset_index()
-    profit_by_league["Bets Count"] = (
-        data["League"].value_counts().reindex(profit_by_league["League"]).values
+    profit_by_league = (
+        data.groupby("League")
+        .agg({"Profit": "sum"})
+        .reset_index()
+        .assign(
+            Bets_Count=lambda df: data["League"]
+            .value_counts()
+            .reindex(df["League"])
+            .values,
+            Profit=lambda df: df["Profit"].round(2),
+        )
+        .sort_values("League")
     )
-    profit_by_league["Profit"] = profit_by_league["Profit"].round(2)
-    profit_by_league = profit_by_league.sort_values("League")  # Sort alphabetically
+
     fig = px.bar(
         profit_by_league,
         x="Profit",
@@ -54,16 +69,19 @@ def plot_profit_by_league(data):
         ),
         color_discrete_map={GREEN_COLOR: GREEN_COLOR, RED_COLOR: RED_COLOR},
         text="Profit",
-        hover_data={"Profit": False, "Bets Count": True, "League": False},
+        hover_data={"Profit": False, "Bets_Count": True, "League": False},
     )
-    fig.update_traces(texttemplate="%{text}", textposition="outside")
+    fig.update_traces(
+        texttemplate="%{text}",
+        textposition="outside",
+        marker={"line": {"width": 1, "color": "DarkSlateGrey"}},
+    )
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
-    fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     st.plotly_chart(fig, use_container_width=True)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
-def plot_winrate_by_league(data):
+def plot_winrate_by_league(data: pd.DataFrame) -> None:
     """
     Plot winrate by league.
 
@@ -71,13 +89,21 @@ def plot_winrate_by_league(data):
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
     st.write("### Winrate by League")
-    data["Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
-    winrate_by_league = data.groupby("League").agg({"Win": "mean"}).reset_index()
-    winrate_by_league["Bets Count"] = (
-        data["League"].value_counts().reindex(winrate_by_league["League"]).values
+    winrate_by_league = (
+        data.assign(Win=lambda df: df["Result"].apply(lambda x: 1 if x == "W" else 0))
+        .groupby("League")
+        .agg({"Win": "mean"})
+        .reset_index()
+        .assign(
+            Bets_Count=lambda df: data["League"]
+            .value_counts()
+            .reindex(df["League"])
+            .values,
+            Winrate=lambda df: (df["Win"] * 100).round(2),
+        )
+        .sort_values("League")
     )
-    winrate_by_league["Winrate"] = (winrate_by_league["Win"] * 100).round(2)
-    winrate_by_league = winrate_by_league.sort_values("League")  # Sort alphabetically
+
     fig = px.bar(
         winrate_by_league,
         x="Winrate",
@@ -86,16 +112,19 @@ def plot_winrate_by_league(data):
         labels={"League": "", "Winrate": "Winrate %"},
         color_discrete_sequence=[BLUE_COLOR],  # Darker blue for winrate
         text="Winrate",
-        hover_data={"Winrate": False, "Bets Count": True, "League": False},
+        hover_data={"Winrate": False, "Bets_Count": True, "League": False},
     )
-    fig.update_traces(texttemplate="%{text}%", textposition="outside")
+    fig.update_traces(
+        texttemplate="%{text}%",
+        textposition="outside",
+        marker={"line": {"width": 1, "color": "DarkSlateGrey"}},
+    )
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
-    fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     st.plotly_chart(fig, use_container_width=True)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
-def plot_roi_by_league(data):
+def plot_roi_by_league(data: pd.DataFrame) -> None:
     """
     Plot ROI by league.
 
@@ -104,15 +133,19 @@ def plot_roi_by_league(data):
     """
     st.write("### ROI by League")
     roi_by_league = (
-        data.groupby("League").agg({"Profit": "sum", "Wager": "sum"}).reset_index()
+        data.groupby("League")
+        .agg({"Profit": "sum", "Wager": "sum"})
+        .reset_index()
+        .assign(
+            Bets_Count=lambda df: data["League"]
+            .value_counts()
+            .reindex(df["League"])
+            .values,
+            ROI=lambda df: (df["Profit"] / df["Wager"] * 100).round(2),
+        )
+        .sort_values("League")
     )
-    roi_by_league["Bets Count"] = (
-        data["League"].value_counts().reindex(roi_by_league["League"]).values
-    )
-    roi_by_league["ROI"] = (
-        (roi_by_league["Profit"] / roi_by_league["Wager"]) * 100
-    ).round(2)
-    roi_by_league = roi_by_league.sort_values("League")  # Sort alphabetically
+
     fig = px.bar(
         roi_by_league,
         x="ROI",
@@ -122,19 +155,16 @@ def plot_roi_by_league(data):
         color=roi_by_league["ROI"].apply(lambda x: GREEN_COLOR if x > 0 else RED_COLOR),
         color_discrete_map={GREEN_COLOR: GREEN_COLOR, RED_COLOR: RED_COLOR},
         text="ROI",
-        hover_data={
-            "League": False,
-            "Profit": False,
-            "Wager": False,
-            "ROI": False,
-            "Bets Count": True,
-        },
+        hover_data={"Bets_Count": True},
     )
-    fig.update_traces(texttemplate="%{text}%", textposition="outside")
+    fig.update_traces(
+        texttemplate="%{text}%",
+        textposition="outside",
+        marker={"line": {"width": 1, "color": "DarkSlateGrey"}},
+    )
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
-    fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     st.plotly_chart(fig, use_container_width=True)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
@@ -144,12 +174,10 @@ if __name__ == "__main__":
 
     if not data.empty:
         filtered_data = render_sidebar(data)
-
         plot_bet_number_percentage(filtered_data)
         plot_profit_by_league(filtered_data)
         plot_winrate_by_league(filtered_data)
         plot_roi_by_league(filtered_data)
-
         st.markdown("<hr>", unsafe_allow_html=True)
     else:
         st.error("Failed to load data. Please check the data source.")

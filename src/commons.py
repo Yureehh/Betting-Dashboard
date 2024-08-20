@@ -1,20 +1,26 @@
-import os
-from datetime import datetime
 from typing import Optional
 
 import gspread
 import pandas as pd
+import pyperclip
 import streamlit as st
 from oauth2client.service_account import ServiceAccountCredentials
 
-VERTICAL_SPACE = "<br><br>"
+HORIZONTAL_LINE = "<hr>"
+SINGLE_VERTICAL_SPACE = "<br>"
+DOUBLE_VERTICAL_SPACE = "<br><br>"
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1rrBtklorbir3zrsHkzTAFlmahxu_S9Gnyrg1RQhRtHw/edit?usp=drive_link"
 GREEN_COLOR = "#00CC96"
 RED_COLOR = "#FF6692"
 BLUE_COLOR = "#0057B8"
+REFERRAL_LINK = "https://thunderpick.io?r=ORACLE_BETS"
+REFERRAL_CODE = "ORACLE_BETS"
+REFERRAL_COPY = "🚀 **Register now to claim your deposit bonus!**"
+REFERRAL_BUTTON = f"**Referral Code:** '_{REFERRAL_CODE}_'"
+REFERRAL_BUTTON_TOOLTIP = "Copied Referral to Clipboard"
 
 
-def setup(page_title: str, page_icon: Optional[str] = ""):
+def setup(page_title: str, page_icon: Optional[str] = None) -> None:
     """
     Setup the Streamlit page with the given title and icon.
 
@@ -27,26 +33,31 @@ def setup(page_title: str, page_icon: Optional[str] = ""):
         layout="wide",
         initial_sidebar_state="expanded",
         menu_items={
-            "About": "Public ledger of my betting activity.\nTwitter: @LolOracleBets"
+            "About": "Public ledger of LoL Oracle betting activity.\nTwitter: @Oracle_Betss"
         },
         page_icon=page_icon,
     )
-    apply_custom_styles()
     st.title(page_title)
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
+    render_referral_section()
+    st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
+    st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
-def apply_custom_styles():
+def render_referral_section() -> None:
     """
-    Apply custom CSS styles to the Streamlit page by loading from an external CSS file.
+    Renders the referral section with a button to go to the referral link and another to copy the referral code.
     """
-    css_file_path = "styles/styles.css"
-    if os.path.exists(css_file_path):
-        with open(css_file_path) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    else:
-        st.warning(f"Custom styles not applied. '{css_file_path}' file not found.")
+
+    if st.button(REFERRAL_COPY, key="referral_link", type="primary"):
+        st.write(
+            f'<meta http-equiv="refresh" content="0; url={REFERRAL_LINK}" />',
+            unsafe_allow_html=True,
+        )
+
+    if st.button(REFERRAL_BUTTON, key="referral_code", type="secondary"):
+        pyperclip.copy(REFERRAL_CODE)
+        st.success(REFERRAL_BUTTON_TOOLTIP, icon="✔️")
 
 
 def compute_profit(bets_df: pd.DataFrame) -> pd.Series:
@@ -61,12 +72,12 @@ def compute_profit(bets_df: pd.DataFrame) -> pd.Series:
     """
     profit = bets_df["Wager"] * (bets_df["Odds"] - 1)
     loss_condition = bets_df["Result"].isin(["L", "Loss", "Lose"])
-    profit.loc[loss_condition] = -bets_df["Wager"]
-    profit.loc[bets_df["Result"] == "Draw"] = 0
+    profit = profit.mask(loss_condition, -bets_df["Wager"])
+    profit = profit.mask(bets_df["Result"] == "Draw", 0)
     return profit
 
 
-@st.cache_data(ttl=60 * 5)  # Cache the data for 5 minutes
+@st.cache_data(ttl=300)  # Cache the data for 5 minutes
 def load_bets_from_google_sheet(sheet_url: str) -> pd.DataFrame:
     """
     Load bets data from Google Sheets.
@@ -86,8 +97,9 @@ def load_bets_from_google_sheet(sheet_url: str) -> pd.DataFrame:
         # Load credentials from Streamlit secrets
         creds_dict = dict(st.secrets["gspread_credentials"])
 
-        # Fix private key formatting issue (if needed)
-        creds_dict["private_key"] += "\n-----END PRIVATE KEY-----\n"
+        # Fix private key formatting issue
+        if not creds_dict["private_key"].endswith("\n-----END PRIVATE KEY-----\n"):
+            creds_dict["private_key"] += "\n-----END PRIVATE KEY-----\n"
 
         # Load credentials directly from the dictionary
         creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
@@ -132,14 +144,15 @@ def process_bets_data(bets_df: pd.DataFrame, pending: bool = False) -> pd.DataFr
     bets_df["Date"] = pd.to_datetime(bets_df["Date"], errors="coerce")
     bets_df["To_Win"] = bets_df["Wager"] * (bets_df["Odds"] - 1)
     bets_df["Profit"] = compute_profit(bets_df)
-    bets_df["ROI"] = (bets_df["Profit"] / bets_df["Wager"] * 100).round(2).astype(
+    bets_df["ROI"] = ((bets_df["Profit"] / bets_df["Wager"]) * 100).round(2).astype(
         str
     ) + "%"
 
     # Ensure 'Premium' column is the last column in the DataFrame if it exists
     if "Premium" in bets_df.columns:
-        cols = [col for col in bets_df.columns if col != "Premium"] + ["Premium"]
-        bets_df = bets_df.loc[:, cols]
+        bets_df = bets_df[
+            [col for col in bets_df.columns if col != "Premium"] + ["Premium"]
+        ]
 
     return bets_df
 
@@ -156,21 +169,3 @@ def load_bets(pending: bool = False) -> pd.DataFrame:
     """
     bets_df = load_bets_from_google_sheet(SHEET_URL)
     return process_bets_data(bets_df, pending)
-
-
-def get_latest_date(filepath: str) -> str:
-    """
-    Get the latest modification date of a file.
-
-    Args:
-        filepath (str): The file path to check.
-
-    Returns:
-        str: The last modification date formatted as 'YYYY-MM-DD'.
-    """
-    try:
-        modified_time = os.path.getmtime(filepath)
-        return datetime.fromtimestamp(modified_time).strftime("%Y-%m-%d")
-    except FileNotFoundError:
-        st.error(f"File not found: {filepath}")
-        return ""  # Return empty string if file is not found

@@ -2,11 +2,22 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from commons import GREEN_COLOR, RED_COLOR, VERTICAL_SPACE, load_bets, setup
+from commons import (
+    DOUBLE_VERTICAL_SPACE,
+    GREEN_COLOR,
+    HORIZONTAL_LINE,
+    RED_COLOR,
+    SINGLE_VERTICAL_SPACE,
+    load_bets,
+    setup,
+)
 from sidebar import render_sidebar
 
+WIN_SYMBOL = "W"
+PAGE_NAME = "LoL Oracle Betting Dashboard"
 
-def calculate_metrics(data):
+
+def calculate_metrics(data: pd.DataFrame) -> dict:
     """
     Calculate metrics such as total bets, winrate, profit, and ROI.
 
@@ -17,7 +28,7 @@ def calculate_metrics(data):
         dict: A dictionary containing calculated metrics.
     """
     total_bets = len(data)
-    total_wins = len(data[data["Result"] == "W"])
+    total_wins = data["Result"].eq(WIN_SYMBOL).sum()
     total_winrate = (total_wins / total_bets) * 100 if total_bets > 0 else 0
     total_profit = data["Profit"].sum()
     total_wager = data["Wager"].sum()
@@ -32,43 +43,39 @@ def calculate_metrics(data):
     }
 
 
-def render_metrics(metrics):
+def render_metrics(metrics: dict) -> None:
     """
     Display metrics for the total number of bets, winrate, profit, and ROI.
 
     Args:
         metrics (dict): A dictionary containing calculated metrics.
     """
-    col1, col2, col3, col4, col5 = st.columns(5)
-    with col1:
-        st.metric("Total Bets", metrics["total_bets"])
-    with col2:
-        st.metric("Units Wagered", metrics["total_wager"])
-    with col3:
-        st.metric("Winrate %", f"{metrics['total_winrate']}%")
-    with col4:
-        st.metric("Profit (Units)", f"{metrics['total_profit']}")
-    with col5:
-        st.metric("ROI %", f"{metrics['total_roi']}%")
+    st.write("### Overview")
+    st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    cols = st.columns(5)
+    metrics_labels = [
+        "Total Bets",
+        "Units Wagered",
+        "Winrate %",
+        "Profit (Units)",
+        "ROI %",
+    ]
+    metrics_values = [
+        metrics["total_bets"],
+        metrics["total_wager"],
+        f"{metrics['total_winrate']}%",
+        metrics["total_profit"],
+        f"{metrics['total_roi']}%",
+    ]
 
+    for col, label, value in zip(cols, metrics_labels, metrics_values):
+        col.metric(label, value)
 
-def render_bet_df(data):
-    """
-    Display the bets ledger in a DataFrame.
-
-    Args:
-        data (pd.DataFrame): The data frame containing the bets ledger.
-    """
-    st.write("### Bets Ledger")
-    data["Date"] = data["Date"].dt.date
-    data = data.sort_values(by="Date", ascending=False)
-    st.dataframe(data, hide_index=True)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
-def render_profit_timeline(data):
+def render_profit_timeline(data: pd.DataFrame) -> None:
     """
     Display a line chart showing the profit timeline.
 
@@ -78,8 +85,6 @@ def render_profit_timeline(data):
     chart_name = "### Profit Timeline"
     x_axis = "Month"
     y_axis = "Profit (Units)"
-
-    data["Date"] = pd.to_datetime(data["Date"])
 
     # Group by month and sum profits
     monthly_profit = data.resample("ME", on="Date")["Profit"].sum().reset_index()
@@ -109,15 +114,33 @@ def render_profit_timeline(data):
             "range": [min_date, max_date],  # Extend range slightly
             "tickmode": "linear",
         },
+        margin=dict(t=40, b=40),
         width=1000,  # Adjust width to make plot wider
     )
 
     st.write(chart_name)
     st.plotly_chart(fig)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
-def calculate_roi_by_wager_type(data):
+def render_bet_df(data: pd.DataFrame) -> None:
+    """
+    Display the bets ledger in a DataFrame.
+
+    Args:
+        data (pd.DataFrame): The data frame containing the bets ledger.
+    """
+    st.write("### Bets Ledger")
+    st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
+
+    data["Date"] = data["Date"].dt.date
+    data = data.sort_values(by="Date", ascending=False)
+
+    st.dataframe(data, hide_index=True)
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
+
+
+def calculate_roi_by_wager_type(data: pd.DataFrame) -> pd.DataFrame:
     """
     Calculate ROI by wager type and count the number of bets per type.
 
@@ -133,12 +156,10 @@ def calculate_roi_by_wager_type(data):
     roi_by_wager["ROI"] = round(
         (roi_by_wager["Profit"] / roi_by_wager["Wager"]) * 100, 2
     )
-    roi_by_wager = roi_by_wager.reset_index()
-    roi_by_wager.rename(columns={"Result": "Bets Count"}, inplace=True)
-    return roi_by_wager
+    return roi_by_wager.reset_index().rename(columns={"Result": "Bets Count"})
 
 
-def create_roi_bar_chart(roi_data):
+def create_roi_bar_chart(roi_data: pd.DataFrame):
     """
     Create a horizontal bar chart for ROI by wager type.
 
@@ -160,52 +181,49 @@ def create_roi_bar_chart(roi_data):
         labels={"Type": "Wager Type", "ROI": "ROI %"},
         color="color",
         color_discrete_map={GREEN_COLOR: GREEN_COLOR, RED_COLOR: RED_COLOR},
-        text="ROI",  # Display the ROI percentage on the bars
+        text="ROI",
         hover_data={
-            "Type": False,  # Disable wager type in hover
-            "color": False,  # Disable color in hover
-            "ROI": False,  # Format ROI as percentage
-            "Bets Count": True,  # Show bet counts
+            "Type": False,
+            "color": False,
+            "ROI": False,
+            "Bets Count": True,
         },
     )
 
-    fig.update_traces(texttemplate="%{x:.2f}%", textposition="outside")
+    fig.update_traces(
+        texttemplate="%{x:.2f}%",
+        textposition="outside",
+        marker={"line": {"width": 1, "color": "DarkSlateGrey"}},
+    )
     fig.update_layout(showlegend=False, yaxis=dict(autorange="reversed"))
-    fig.update_traces(marker={"line": {"width": 1, "color": "DarkSlateGrey"}})
     return fig
 
 
-def render_roi_by_wager_type(roi_data):
+def render_roi_by_wager_type(roi_data: pd.DataFrame) -> None:
     """
     Display the ROI by wager type chart.
 
     Args:
         roi_data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    fig = create_roi_bar_chart(roi_data)
     st.write("### ROI by Wager Type")
-    st.plotly_chart(fig)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    st.plotly_chart(create_roi_bar_chart(roi_data))
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
-    setup("Lol-Oracle Betting Dashboard")
+    setup(PAGE_NAME)
 
     data = load_bets()
 
     if not data.empty:
         filtered_data = render_sidebar(data)
 
-        metrics = calculate_metrics(filtered_data)
-        render_metrics(metrics)
-
+        render_metrics(calculate_metrics(filtered_data))
         render_profit_timeline(filtered_data)
-
         render_bet_df(filtered_data)
+        render_roi_by_wager_type(calculate_roi_by_wager_type(filtered_data))
 
-        roi_data = calculate_roi_by_wager_type(filtered_data)
-        render_roi_by_wager_type(roi_data)
-
-        st.markdown("<hr>", unsafe_allow_html=True)
+        st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
     else:
         st.error("Failed to load data. Please check the data source.")

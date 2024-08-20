@@ -1,10 +1,19 @@
+import pandas as pd
 import streamlit as st
 
-from commons import VERTICAL_SPACE, load_bets, setup
+from commons import DOUBLE_VERTICAL_SPACE, load_bets, setup
 from sidebar import render_sidebar
 
 
-def render_table(data, values, index, columns, aggfunc, title, round_digits=2):
+def render_table(
+    data: pd.DataFrame,
+    values: str,
+    index: str,
+    columns: str,
+    aggfunc: str,
+    title: str,
+    round_digits: int = 2,
+) -> None:
     """
     General function to render a table using Streamlit, displaying aggregated data.
 
@@ -20,13 +29,12 @@ def render_table(data, values, index, columns, aggfunc, title, round_digits=2):
     st.write(f"### {title}")
     table = data.pivot_table(
         values=values, index=index, columns=columns, aggfunc=aggfunc, fill_value=0
-    )
-    table = table.round(round_digits)
+    ).round(round_digits)
     st.dataframe(table)
-    st.markdown(VERTICAL_SPACE, unsafe_allow_html=True)
+    st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
-def render_profit_table(data):
+def render_profit_table(data: pd.DataFrame) -> None:
     """
     Render a table showing profit by bet type and league.
 
@@ -43,7 +51,7 @@ def render_profit_table(data):
     )
 
 
-def render_bet_count_table(data):
+def render_bet_count_table(data: pd.DataFrame) -> None:
     """
     Render a table showing the number of bets by bet type and league.
 
@@ -60,7 +68,7 @@ def render_bet_count_table(data):
     )
 
 
-def render_total_wager_table(data):
+def render_total_wager_table(data: pd.DataFrame) -> None:
     """
     Render a table showing the total wager by bet type and league.
 
@@ -77,7 +85,7 @@ def render_total_wager_table(data):
     )
 
 
-def render_average_odds_table(data):
+def render_average_odds_table(data: pd.DataFrame) -> None:
     """
     Render a table showing the average odds by bet type and league.
 
@@ -94,14 +102,14 @@ def render_average_odds_table(data):
     )
 
 
-def render_win_rate_table(data):
+def render_win_rate_table(data: pd.DataFrame) -> None:
     """
     Render a table showing the win rate by bet type and league.
 
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
     """
-    data["Win"] = data["Result"].apply(lambda x: 1 if x == "W" else 0)
+    data = data.assign(Win=data["Result"].apply(lambda x: 1 if x == "W" else 0))
     render_table(
         data,
         values="Win",
@@ -114,7 +122,7 @@ def render_win_rate_table(data):
 
 
 if __name__ == "__main__":
-    setup("Summaries by Bet and League")
+    setup("Aggregates by Bet and League")
 
     data = load_bets()
 
