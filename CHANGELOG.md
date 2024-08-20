@@ -1,3 +1,19 @@
+## 1.2.0 (2024-08-20)
+
+### Feat
+
+- **referral.py**: added an ad-hoc page for referrals
+
+### Fix
+
+- **pages**: improved pages appearance and behaviours
+
+### Refactor
+
+- **global**: rewrote every page to be better written, more efficient, and containing referral
+- **pages**: improved code mantainability
+- **global**: Minor improvements
+
 ## 1.1.1 (2024-08-15)
 
 ### Fix
