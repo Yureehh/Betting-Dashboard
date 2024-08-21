@@ -5,7 +5,9 @@ from commons import DOUBLE_VERTICAL_SPACE, HORIZONTAL_LINE, load_bets, setup
 from sidebar import render_sidebar
 
 PAGE_NAME = "Pending Bets"
-MISSING_DATA_MESSAGE = "No data available. Please check the data source."
+MISSING_DATA_MESSAGE = (
+    "⏳ There are no pending bets to display currently, check again later."
+)
 
 
 def render_pending_bets_df(pending_bets_df: pd.DataFrame) -> None:
@@ -21,7 +23,7 @@ def render_pending_bets_df(pending_bets_df: pd.DataFrame) -> None:
         st.write("### Pending Bets")
         pending_bets_df["Date"] = pending_bets_df["Date"].dt.date
         pending_bets_df = pending_bets_df.sort_values(by="Date", ascending=False)
-        st.dataframe(pending_bets_df, hide_index=True)
+        st.dataframe(pending_bets_df, hide_index=True, use_container_width=True)
         st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 

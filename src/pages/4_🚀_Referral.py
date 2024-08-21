@@ -29,8 +29,8 @@ def render_expanded_referral_page():
         "This means you can start betting with twice the amount you deposit, giving you more chances to win big!"
     )
     st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
-
     st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
+    st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
     st.subheader("🔥 Spread the Word and Get Rewarded:")
     st.write(
@@ -40,7 +40,9 @@ def render_expanded_referral_page():
         "As a VIP, you'll enjoy enhanced betting options, exclusive tips, and even more rewards tailored just for you."
     )
 
+    st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
     st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
+    st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
     st.subheader("📢 How to Get Started:")
     st.write(
