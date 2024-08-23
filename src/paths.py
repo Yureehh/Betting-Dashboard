@@ -11,21 +11,11 @@ from pathlib import Path
 BASE_DIR = Path.cwd()
 
 # Directories for data storage
-DATA_DIR = BASE_DIR / "data"
-MODEL_VALIDATION_DIR = DATA_DIR / "model_validation"
+IMGS_DIR = BASE_DIR / "imgs"
 
 # Ensure that the necessary directories exist
-for directory in [DATA_DIR, MODEL_VALIDATION_DIR]:
+for directory in [IMGS_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
 
 # Paths for model validation outputs
-ACCURACY_OVER_SAMPLES_PATH = (
-    MODEL_VALIDATION_DIR / "OutcomePrediction_Accuracy_Over_Samples.png"
-)
-HISTORICAL_ACCURACY_PATH = (
-    MODEL_VALIDATION_DIR / "OutcomePrediction_Historical_Accuracy.png"
-)
-LEAGUE_ACCURACIES_PATH = (
-    MODEL_VALIDATION_DIR / "OutcomePrediction_league_accuracies.json"
-)
-MODEL_METRICS_PATH = MODEL_VALIDATION_DIR / "OutcomePrediction_metrics.json"
+LOGO_PATH = IMGS_DIR / "logo.png"
