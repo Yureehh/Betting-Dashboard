@@ -17,5 +17,6 @@ IMGS_DIR = BASE_DIR / "imgs"
 for directory in [IMGS_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
 
-# Paths for model validation outputs
-LOGO_PATH = IMGS_DIR / "logo.png"
+# Paths for logo images
+LOGO_PATH = str(IMGS_DIR / "logo.png")
+RELATIVE_LOGO_PATH = "imgs/logo.png"

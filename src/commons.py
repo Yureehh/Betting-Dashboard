@@ -1,3 +1,4 @@
+import webbrowser
 from typing import Optional
 
 import gspread
@@ -5,9 +6,8 @@ import pandas as pd
 import pyperclip
 import streamlit as st
 from oauth2client.service_account import ServiceAccountCredentials
-from PIL import Image
 
-from paths import LOGO_PATH
+from paths import RELATIVE_LOGO_PATH as LOGO_PATH
 
 # Constants
 HORIZONTAL_LINE = "<hr>"
@@ -24,7 +24,6 @@ REFERRAL_BUTTON = f"📢 **Click here to copy Referral Code:** '_{REFERRAL_CODE}
 REFERRAL_BUTTON_TOOLTIP = "Copied Referral to Clipboard"
 ABOUT_TEXT = "Public ledger of LoL Oracle betting activity.\nTwitter: @Oracle_Betss"
 PREMIUM_STRING = "Premium"
-LOGO_IMAGE = Image.open(LOGO_PATH)
 
 
 def render_horizontal_line() -> None:
@@ -46,7 +45,7 @@ def increase_logo_size() -> None:
     )
 
 
-def setup(page_title: str, page_icon: Optional[str] = LOGO_IMAGE) -> None:
+def setup(page_title: str, page_icon: Optional[str] = LOGO_PATH) -> None:
     """
     Setup the Streamlit page with the given title and icon.
 
@@ -63,7 +62,7 @@ def setup(page_title: str, page_icon: Optional[str] = LOGO_IMAGE) -> None:
             "About": ABOUT_TEXT,
         },
     )
-    st.logo(LOGO_IMAGE, link="https://thunderpick.io?r=ORACLE_BETS")
+    st.logo(LOGO_PATH, link="https://thunderpick.io?r=ORACLE_BETS")
     increase_logo_size()
     st.title(page_title)
     st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
