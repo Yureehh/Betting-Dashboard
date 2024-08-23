@@ -76,51 +76,67 @@ def render_metrics(metrics: dict) -> None:
     st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
-def render_profit_timeline(data: pd.DataFrame) -> None:
+def render_profit_timeline(data: pd.DataFrame, timespan: str = "D") -> None:
     """
-    Display a line chart showing the profit timeline.
+    Display a line chart showing the cumulative profit timeline with adjustable timespan.
 
     Args:
         data (pd.DataFrame): The data frame containing the bets ledger.
+        timespan (str): The frequency for resampling the data.
+                        Options: 'D' for daily, 'M' for monthly.
     """
-    chart_name = "### Profit Timeline"
-    x_axis = "Month"
-    y_axis = "Profit (Units)"
+    if timespan not in ["D", "M"]:
+        raise ValueError("Invalid timespan. Choose 'D' for daily or 'M' for monthly.")
 
-    # Group by month and sum profits
-    monthly_profit = data.resample("ME", on="Date")["Profit"].sum().reset_index()
-    monthly_profit.columns = [x_axis, y_axis]
+    chart_name = "### Profit Timeline (Units)"
+    x_axis = "Date"
+    y_axis = "Cumulative Profit"
 
-    # Create a separate column for month in string format for display
-    monthly_profit["Month_str"] = monthly_profit[x_axis].dt.strftime("%Y-%m")
+    # Resample data based on the selected timespan and calculate cumulative profit
+    if timespan == "D":
+        resampled_profit = (
+            data.resample("D", on="Date")["Profit"].sum().cumsum().reset_index()
+        )
+        tick_format = "%Y-%m-%d"
+        max_date = resampled_profit[x_axis].max()
+        x_axis_range = [
+            max_date - pd.DateOffset(days=14),
+            max_date + pd.DateOffset(days=1),
+        ]
+    elif timespan == "M":
+        resampled_profit = (
+            data.resample("M", on="Date")["Profit"].sum().cumsum().reset_index()
+        )
+        tick_format = "%Y-%m"
+        max_date = resampled_profit[x_axis].max()
+        x_axis_range = [
+            max_date - pd.DateOffset(months=12),
+            max_date + pd.DateOffset(months=1),
+        ]
 
-    # Compute display range for x-axis
-    min_date = monthly_profit[x_axis].min() - pd.DateOffset(months=1)
-    max_date = monthly_profit[x_axis].max() + pd.DateOffset(months=1)
+    # Rename the cumulative sum column for clarity
+    resampled_profit.columns = [x_axis, y_axis]
 
     # Create the Plotly figure
-    fig = px.line(
-        monthly_profit,
-        x=x_axis,
-        y=y_axis,
-        markers=True,
-    )
+    fig = px.line(resampled_profit, x=x_axis, y=y_axis, markers=True)
 
     fig.update_layout(
         xaxis_title=None,
         yaxis_title=y_axis,
         xaxis={
-            "tickformat": "%Y-%m",
-            "dtick": "M1",  # Ensure one tick per month
-            "range": [min_date, max_date],  # Extend range slightly
+            "tickformat": tick_format,
+            "range": x_axis_range,
             "tickmode": "linear",
         },
         margin=dict(t=40, b=40),
-        width=1000,  # Adjust width to make plot wider
+        autosize=True,  # Allow plot to resize based on the dimensions of its container
+        width=None,  # Remove the fixed width setting
     )
 
     st.write(chart_name)
-    st.plotly_chart(fig)
+    st.plotly_chart(
+        fig, use_container_width=True
+    )  # Ensure the plot uses the full container width
     st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
@@ -137,7 +153,7 @@ def render_bet_df(data: pd.DataFrame) -> None:
     data["Date"] = data["Date"].dt.date
     data = data.sort_values(by="Date", ascending=False)
 
-    st.dataframe(data, hide_index=True)
+    st.dataframe(data, hide_index=True, use_container_width=True)
     st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 

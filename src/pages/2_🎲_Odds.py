@@ -49,15 +49,20 @@ def plot_bet_number_percentage(data: pd.DataFrame) -> None:
     bet_counts = data[ODDS_GROUP_STR].value_counts().reset_index()
     bet_counts.columns = [ODDS_GROUP_STR, "Bets Count"]
     bet_counts = bet_counts.sort_values(ODDS_GROUP_STR)
+
     fig = px.pie(
         bet_counts,
         values="Bets Count",
         names=ODDS_GROUP_STR,
     )
+
     fig.update_layout(
         yaxis=dict(autorange="reversed"),
         showlegend=True,
+        autosize=True,
+        legend=dict(orientation="v", x=1.1, y=0.5),
     )
+
     st.plotly_chart(fig, use_container_width=True)
     st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 

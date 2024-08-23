@@ -16,8 +16,8 @@ RED_COLOR = "#FF6692"
 BLUE_COLOR = "#0057B8"
 REFERRAL_LINK = "https://thunderpick.io?r=ORACLE_BETS"
 REFERRAL_CODE = "ORACLE_BETS"
-REFERRAL_COPY = "🚀 **Join ThunderPick now to claim your deposit bonus!**"
-REFERRAL_BUTTON = f"📢 **Click to Copy Referral Code:** '_{REFERRAL_CODE}_'"
+REFERRAL_COPY = "🚀 **Join now to claim your first Deposit Bonus!**"
+REFERRAL_BUTTON = f"📢 **Click here to copy Referral Code:** '_{REFERRAL_CODE}_'"
 REFERRAL_BUTTON_TOOLTIP = "Copied Referral to Clipboard"
 ABOUT_TEXT = "Public ledger of LoL Oracle betting activity.\nTwitter: @Oracle_Betss"
 PREMIUM_STRING = "Premium"
@@ -73,16 +73,30 @@ def render_referral_section() -> None:
     """
     Renders the referral section with a button to go to the referral link and another to copy the referral code.
     """
+    col1, col2 = st.columns(2)  # Create two columns for the buttons
 
-    if st.button(REFERRAL_COPY, key="referral_link", type="primary"):
-        st.write(
-            f'<meta http-equiv="refresh" content="0; url={REFERRAL_LINK}" />',
-            unsafe_allow_html=True,
-        )
+    with col1:
+        if st.button(
+            REFERRAL_COPY,
+            key="referral_link",
+            help="Click to visit the referral site.",
+            type="primary",
+        ):
+            st.write(
+                f'<meta http-equiv="refresh" content="0; url={REFERRAL_LINK}" />',
+                unsafe_allow_html=True,
+            )
 
-    if st.button(REFERRAL_BUTTON, key="referral_code", type="secondary"):
-        pyperclip.copy(REFERRAL_CODE)
-        st.success(REFERRAL_BUTTON_TOOLTIP, icon="✔️")
+    with col2:
+        if st.button(
+            REFERRAL_BUTTON,
+            key="referral_code",
+            help="Click to copy the referral code.",
+        ):
+            pyperclip.copy(REFERRAL_CODE)
+            st.success(
+                REFERRAL_BUTTON_TOOLTIP
+            )  # This success message will show up right next to the button
 
 
 def compute_profit(bets_df: pd.DataFrame) -> pd.Series:

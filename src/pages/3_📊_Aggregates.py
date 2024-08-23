@@ -32,7 +32,7 @@ def render_table(
     table = data.pivot_table(
         values=values, index=index, columns=columns, aggfunc=aggfunc, fill_value=0
     ).round(round_digits)
-    st.dataframe(table)
+    st.dataframe(table, use_container_width=True)
     st.markdown(DOUBLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
