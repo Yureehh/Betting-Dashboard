@@ -1,3 +1,9 @@
+## 2.0.2 (2024-08-23)
+
+### Fix
+
+- **commons.py**: fixed page redirect
+
 ## 2.0.1 (2024-08-23)
 
 ### Fix
