@@ -1,3 +1,9 @@
+## 2.0.3 (2024-08-23)
+
+### Fix
+
+- **commons**: changed logo path to be relative
+
 ## 2.0.2 (2024-08-23)
 
 ### Fix
