@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Betting-Dashboard"
-version = "2.0.0"
+version = "2.0.1"
 description = "Oracle-Bets' public ledger on LoL games"
 authors = ["Yureeh <oracle.bets@outlook.com>"]
 license = "MIT"

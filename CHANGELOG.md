@@ -1,3 +1,13 @@
+## 2.0.1 (2024-08-23)
+
+### Fix
+
+- **commons**: fixed logo path
+
+### Perf
+
+- **responsiveness**: made all pages responsive
+
 ## 2.0.0 (2024-08-23)
 
 ## 1.2.0 (2024-08-20)
