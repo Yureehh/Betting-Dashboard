@@ -1,3 +1,9 @@
+## 2.0.5 (2024-08-23)
+
+### Fix
+
+- **commons**: changed how to copy to clipboard
+
 ## 2.0.4 (2024-08-23)
 
 ### Fix
