@@ -1,9 +1,8 @@
-import webbrowser
 from typing import Optional
 
+import clipboard
 import gspread
 import pandas as pd
-import pyperclip
 import streamlit as st
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -91,8 +90,7 @@ def render_referral_section() -> None:
             key="referral_code",
             help="Click to copy the referral code.",
         ):
-            pyperclip.copy(REFERRAL_CODE)
-            st.success(REFERRAL_BUTTON_TOOLTIP)
+            clipboard.copy(REFERRAL_CODE)
 
 
 def compute_profit(bets_df: pd.DataFrame) -> pd.Series:
