@@ -71,16 +71,6 @@ def setup(page_title: str, page_icon: Optional[str] = LOGO_PATH) -> None:
     st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
-def open_page(url: str) -> None:
-    """
-    Open a new page in the browser.
-
-    Args:
-        url (str): The URL of the page to open.
-    """
-    webbrowser.open_new_tab(url)
-
-
 def render_referral_section() -> None:
     """
     Renders the referral section with a button to go to the referral link and another to copy the referral code.
@@ -88,13 +78,11 @@ def render_referral_section() -> None:
     col1, col2 = st.columns(2)  # Create two columns for the buttons
 
     with col1:
-        st.button(
+        st.link_button(
             REFERRAL_COPY,
-            key="referral_link",
+            url=REFERRAL_LINK,
             help="Click to visit the referral site.",
             type="primary",
-            on_click=open_page,
-            args=(REFERRAL_LINK,),
         )
 
     with col2:
