@@ -6,10 +6,9 @@ from commons import (
     BLUE_COLOR,
     DOUBLE_VERTICAL_SPACE,
     GREEN_COLOR,
-    HORIZONTAL_LINE,
     RED_COLOR,
-    load_bets,
-    setup,
+    render_horizontal_line,
+    setup_and_load_bets,
 )
 from sidebar import render_sidebar
 
@@ -171,16 +170,16 @@ def plot_roi_by_league(data: pd.DataFrame) -> None:
 
 
 if __name__ == "__main__":
-    setup(PAGE_NAME)
-
-    data = load_bets()
+    data = setup_and_load_bets(PAGE_NAME)
 
     if not data.empty:
         filtered_data = render_sidebar(data)
+
         plot_bet_number_percentage(filtered_data)
         plot_profit_by_league(filtered_data)
         plot_winrate_by_league(filtered_data)
         plot_roi_by_league(filtered_data)
-        st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
+
+        render_horizontal_line()
     else:
         st.error("Failed to load data. Please check the data source.")

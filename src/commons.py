@@ -6,6 +6,7 @@ import pyperclip
 import streamlit as st
 from oauth2client.service_account import ServiceAccountCredentials
 
+# Constants
 HORIZONTAL_LINE = "<hr>"
 SINGLE_VERTICAL_SPACE = "<br>"
 DOUBLE_VERTICAL_SPACE = "<br><br>"
@@ -20,9 +21,29 @@ REFERRAL_BUTTON = f"📢 **Click to Copy Referral Code:** '_{REFERRAL_CODE}_'"
 REFERRAL_BUTTON_TOOLTIP = "Copied Referral to Clipboard"
 ABOUT_TEXT = "Public ledger of LoL Oracle betting activity.\nTwitter: @Oracle_Betss"
 PREMIUM_STRING = "Premium"
+PAGE_ICON = r"imgs\logo.png"
 
 
-def setup(page_title: str, page_icon: Optional[str] = None) -> None:
+def render_horizontal_line() -> None:
+    """Render a horizontal line using Streamlit."""
+    st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
+
+
+def increase_logo_size() -> None:
+    """Increase the size of the logo using Streamlit."""
+    st.html(
+        """
+        <style>
+            [alt=Logo] {
+                height: 6rem;
+                padding-left: 1.5rem;
+            }
+        </style>
+    """
+    )
+
+
+def setup(page_title: str, page_icon: Optional[str] = PAGE_ICON) -> None:
     """
     Setup the Streamlit page with the given title and icon.
 
@@ -32,13 +53,15 @@ def setup(page_title: str, page_icon: Optional[str] = None) -> None:
     """
     st.set_page_config(
         page_title="LoL Oracle",
+        page_icon=page_icon,
         layout="wide",
         initial_sidebar_state="expanded",
         menu_items={
             "About": ABOUT_TEXT,
         },
-        page_icon=page_icon,
     )
+    st.logo(PAGE_ICON, link="https://thunderpick.io?r=ORACLE_BETS")
+    increase_logo_size()
     st.title(page_title)
     st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
     render_referral_section()
@@ -171,3 +194,18 @@ def load_bets(pending: bool = False) -> pd.DataFrame:
     """
     bets_df = load_bets_from_google_sheet(SHEET_URL)
     return process_bets_data(bets_df, pending)
+
+
+def setup_and_load_bets(page_title: str, pending: bool = False) -> pd.DataFrame:
+    """
+    Setup the Streamlit page and load the bets ledger data.
+
+    Args:
+        page_title (str): The title of the Streamlit page.
+        pending (bool): If True, only pending bets will be returned.
+
+    Returns:
+        pd.DataFrame: The processed bets ledger DataFrame.
+    """
+    setup(page_title)
+    return load_bets(pending)

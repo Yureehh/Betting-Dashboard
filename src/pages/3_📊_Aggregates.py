@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-from commons import DOUBLE_VERTICAL_SPACE, HORIZONTAL_LINE, load_bets, setup
+from commons import DOUBLE_VERTICAL_SPACE, render_horizontal_line, setup_and_load_bets
 from sidebar import render_sidebar
 
 PAGE_NAME = "Aggregates by League and Bet Type"
@@ -124,9 +124,7 @@ def render_win_rate_table(data: pd.DataFrame) -> None:
 
 
 if __name__ == "__main__":
-    setup(PAGE_NAME)
-
-    data = load_bets()
+    data = setup_and_load_bets(PAGE_NAME)
 
     if not data.empty:
         filtered_data = render_sidebar(data)
@@ -137,6 +135,6 @@ if __name__ == "__main__":
         render_total_wager_table(filtered_data)
         render_average_odds_table(filtered_data)
 
-        st.markdown(HORIZONTAL_LINE, unsafe_allow_html=True)
+        render_horizontal_line()
     else:
         st.error("Failed to load data. Please check the data source.")
