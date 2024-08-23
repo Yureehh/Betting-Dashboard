@@ -72,6 +72,16 @@ def setup(page_title: str, page_icon: Optional[str] = LOGO_IMAGE) -> None:
     st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
+def open_page(url: str) -> None:
+    """
+    Open a new page in the browser.
+
+    Args:
+        url (str): The URL of the page to open.
+    """
+    webbrowser.open_new_tab(url)
+
+
 def render_referral_section() -> None:
     """
     Renders the referral section with a button to go to the referral link and another to copy the referral code.
@@ -79,16 +89,14 @@ def render_referral_section() -> None:
     col1, col2 = st.columns(2)  # Create two columns for the buttons
 
     with col1:
-        if st.button(
+        st.button(
             REFERRAL_COPY,
             key="referral_link",
             help="Click to visit the referral site.",
             type="primary",
-        ):
-            st.write(
-                f'<meta http-equiv="refresh" content="0; url={REFERRAL_LINK}" />',
-                unsafe_allow_html=True,
-            )
+            on_click=open_page,
+            args=(REFERRAL_LINK,),
+        )
 
     with col2:
         if st.button(
@@ -97,9 +105,7 @@ def render_referral_section() -> None:
             help="Click to copy the referral code.",
         ):
             pyperclip.copy(REFERRAL_CODE)
-            st.success(
-                REFERRAL_BUTTON_TOOLTIP
-            )  # This success message will show up right next to the button
+            st.success(REFERRAL_BUTTON_TOOLTIP)
 
 
 def compute_profit(bets_df: pd.DataFrame) -> pd.Series:
