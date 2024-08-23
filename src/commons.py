@@ -1,6 +1,5 @@
 from typing import Optional
 
-import clipboard
 import gspread
 import pandas as pd
 import streamlit as st
@@ -70,6 +69,11 @@ def setup(page_title: str, page_icon: Optional[str] = LOGO_PATH) -> None:
     st.markdown(SINGLE_VERTICAL_SPACE, unsafe_allow_html=True)
 
 
+def copy_referral_code() -> None:
+    # use javascript to copy the referral code to the clipboard
+    pass
+
+
 def render_referral_section() -> None:
     """
     Renders the referral section with a button to go to the referral link and another to copy the referral code.
@@ -90,7 +94,7 @@ def render_referral_section() -> None:
             key="referral_code",
             help="Click to copy the referral code.",
         ):
-            clipboard.copy(REFERRAL_CODE)
+            st.code(REFERRAL_CODE)
 
 
 def compute_profit(bets_df: pd.DataFrame) -> pd.Series:
