@@ -1,3 +1,10 @@
+## 2.0.4 (2024-08-23)
+
+### Fix
+
+- **commons**: moved to clipboard to copy to clipboard code
+- **commons**: added link button
+
 ## 2.0.3 (2024-08-23)
 
 ### Fix
